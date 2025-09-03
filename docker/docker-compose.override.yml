@@ -1,0 +1,9 @@
+services:
+  wayprof_phpfpm:
+    restart: "no"
+  wayprof_nginx:
+    restart: "no"
+  wayprof_db:
+    restart: "no"
+  wayprof_redis:
+    restart: "no"

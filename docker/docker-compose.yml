@@ -1,0 +1,51 @@
+services:
+    wayprof_phpfpm:
+        network_mode: host
+        build:
+            context: ./conf/php
+            network: host
+        container_name: "wayprof_phpfpm"
+        restart: always
+        volumes:
+            - /var/www/way-prof/backend_v2:/wayprof
+            - ./conf/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+            - ./conf/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+
+    wayprof_nginx:
+        network_mode: host
+        container_name: "wayprof_nginx"
+        image: nginx:mainline
+        restart: always
+        depends_on:
+            - wayprof_phpfpm
+        volumes:
+            - /var/www/way-prof/backend_v2:/wayprof
+            - ./conf/nginx/default.conf:/etc/nginx/conf.d/default.conf
+            - ./data/nginx/log:/var/log/nginx
+
+    wayprof_db:
+        image: 'mysql:8.4'
+        container_name: "wayprof_db"
+        #command: --default-authentication-plugin=mysql_native_password
+        command: [ "mysqld", "--mysql-native-password=ON" ]
+        restart: always
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: 1
+            MYSQL_DATABASE: wayprod_dev
+            MYSQL_USER: wayprof
+            MYSQL_PASSWORD: 1
+        volumes:
+            - ./data/db/:/var/lib/mysql/
+            - ./conf/mysql/:/etc/my.cnf.d/
+
+    wayprof_redis:
+        image: redis:alpine
+        container_name: wayprof_redis
+        command: redis-server --appendonly yes
+        ports:
+            - "6379:6379"
+        volumes:
+            - ./data/redis:/data
+        restart: always

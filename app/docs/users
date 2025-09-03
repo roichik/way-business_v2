@@ -1,0 +1,51 @@
+
+uuid                       varchar(36)         not null,
+email                varchar(100)                                                  not null,
+phone                      varchar(15)         not null,
+password             varchar(255)                                                  not null,
+name                 varchar(50)                                                  not null,
+first_name                 varchar(100)        not null,
+last_name                  varchar(100)        not null,
+father_name                varchar(100)
+gender                     enum ('m', 'w')  null,
+birthday_at datetime
+
+
+
+
+        uuid                       char(36)         not null,
+        email                      char(255)        not null,
+        phone                      char(15)         not null,
+        first_name                 char(255)        not null,
+        middle_name                char(255)        not null,
+        last_name                  char(255)        not null,
+    date_of_birth              int              null comment 'unix timestamp	',
+        gender                     enum ('m', 'w')  null,
+    position_id                int unsigned     not null,
+    resume_custom_url          text             null,
+    resume_file_basename       char(255)        null,
+    is_all_agreements_accepted tinyint unsigned not null,
+
+
+
+        uuid                       char(36)         not null,
+        email                      char(255)        not null,
+        phone                      char(15)         not null,
+        first_name                 char(255)        not null,
+        middle_name                char(255)        not null,
+        last_name                  char(255)        not null,
+    date_of_birth              int              null comment 'unix timestamp	',
+        gender                     enum ('m', 'w')  null,
+            position_id                int unsigned     null,
+            resume_custom_url          text             null,
+            resume_file_basename       char(255)        null,
+            is_all_agreements_accepted tinyint unsigned not null,
+
+
+        uuid                 char(36)                                                   not null,
+        email                char(255)                                                  not null,
+            language_code        char(3)                                                    not null,
+        password             char(255)                                                  not null,
+        name                 char(255)                                                  not null,
+            avatar_file_basename char(255)                              default ''          not null,
+            role_code            enum ('admin', 'auditor', 'hrmanager') default 'hrmanager' not null,
