@@ -1,8 +1,9 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use App\Models\CompanyStructure;
-use App\Models\CompanyStructureType;
+use App\Models\CompanyStructure\Company;
+use App\Models\CompanyStructure\Division;
+use App\Models\CompanyStructure\Position;
 
 return new class extends Migration {
     /**
@@ -10,35 +11,26 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        $locationTypeModel = CompanyStructureType::whereSlug('location')->first();
-        $departmentTypeModel = CompanyStructureType::whereSlug('department')->first();
-        $positionTypeModel = CompanyStructureType::whereSlug('position')->first();
-
-        /** @var CompanyStructure $locationModel */
-        $locationModel = (new CompanyStructure())->fill([
+        $company = new Company();
+        $company->fill([
             'title' => 'Главная организация',
         ]);
-        $locationModel->structureType()->associate($locationTypeModel);
-        $locationModel->save();
+        $company->save();
 
-        foreach ($this->getDatas() as $departament => $positions) {
-            /** @var CompanyStructure $departamentModel */
-            $departamentModel = (new CompanyStructure())->fill([
-                'title' => $departament,
+        foreach ($this->getDatas() as $division => $positions) {
+            $division = (new Division())->fill([
+                'title'      => $division,
+                'company_id' => $company->id,
             ]);
-            $departamentModel->structureType()->associate($departmentTypeModel);
-            $departamentModel->save();
-            $departamentModel->parent()->attach($locationModel);
-
+            $division->save();
 
             foreach ($positions as $position) {
                 /** @var CompanyStructure $departamentModel */
-                $positiontModel = (new CompanyStructure())->fill([
-                    'title' => $position,
+                $positiont = (new Position())->fill([
+                    'title'       => $position,
+                    'division_id' => $division->id,
                 ]);
-                $positiontModel->structureType()->associate($positionTypeModel);
-                $positiontModel->save();
-                $positiontModel->parent()->attach($departamentModel);
+                $positiont->save();
             }
         }
     }
