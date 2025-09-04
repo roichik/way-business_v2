@@ -73,17 +73,12 @@ class CompanyStructureCrudController extends BaseCrudController
         CRUD::column('id')->label('ID');
         CRUD::column('title')->type('text')->label('Название');
         foreach ($this->companyStructureType->companyStructureTypeRel as $companyStructureTypeRel) {
-            /** @var Collection $options */
-            $options = CompanyStructure::whereTypeId($companyStructureTypeRel->id)->get();
-            $options = $options->pluck('title', 'id');
-            $companyStructure = CompanyStructure::find($this->crud->getCurrentEntryId());
-
             CRUD::column([   // select_from_array
-                'name'        => $companyStructureTypeRel->slug,
-                'label'       => $companyStructureTypeRel->title,
-                'type'        => 'text',
+                'name'  => $companyStructureTypeRel->slug,
+                'label' => $companyStructureTypeRel->title,
+                'type'  => 'text',
                 //'default'     =>
-                'value' => function($entity) use ($companyStructureTypeRel){
+                'value' => function ($entity) use ($companyStructureTypeRel) {
                     return $entity
                         ?->parent()
                         ->whereTypeId($companyStructureTypeRel->id)
@@ -101,20 +96,19 @@ class CompanyStructureCrudController extends BaseCrudController
     {
         CRUD::column('id')->label('ID');
         CRUD::column('title')->type('text')->label('Название');
-
         foreach ($this->companyStructureType->companyStructureTypeRel as $companyStructureTypeRel) {
-            /** @var Collection $options */
-            $options = CompanyStructure::whereTypeId($companyStructureTypeRel->id)->get();
-            $options = $options->pluck('title', 'id');
-            $companyStructure = CompanyStructure::find($this->crud->getCurrentEntryId());
-
             CRUD::column([   // select_from_array
-                'name'        => $companyStructureTypeRel->slug,
-                'label'       => $companyStructureTypeRel->title,
-                'type'        => 'select_from_array',
-                'options'     => $options,
-                'allows_null' => true,
-                'default'     => $companyStructure->parent()->whereTypeId($companyStructureTypeRel->id)->first()?->title,
+                'name'  => $companyStructureTypeRel->slug,
+                'label' => $companyStructureTypeRel->title,
+                'type'  => 'text',
+                //'default'     =>
+                'value' => function ($entity) use ($companyStructureTypeRel) {
+                    return $entity
+                        ?->parent()
+                        ->whereTypeId($companyStructureTypeRel->id)
+                        ->first()
+                        ?->title;
+                },
             ]);
         }
     }
