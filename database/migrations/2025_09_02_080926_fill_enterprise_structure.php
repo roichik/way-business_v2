@@ -39,7 +39,6 @@ return new class extends Migration {
                 $positiontModel->structureType()->associate($positionTypeModel);
                 $positiontModel->save();
                 $positiontModel->parent()->attach($departamentModel);
-
             }
         }
     }
