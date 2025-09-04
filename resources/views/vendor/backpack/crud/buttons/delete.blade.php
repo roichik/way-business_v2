@@ -1,22 +1,15 @@
-@if ($entry instanceof \App\Models\CompanyStructureType &&
-    !$entry->hasFlag(\App\Dictionaries\CompanyStructure\CompanyStructureTypeFlagDictionary::DISABLE_DELETION)
-    )
-
-    @if ($crud->hasAccess('delete', $entry))
-        <a href="javascript:void(0)" onclick="deleteEntry(this)" bp-button="delete" data-route="{{ url($crud->route.'/'.$entry->getKey()) }}" class="btn btn-sm btn-link" data-button-type="delete">
-            <i class="la la-trash"></i> <span>{{ trans('backpack::crud.delete') }}</span>
-        </a>
-    @endif
-
-
+@if ($crud->hasAccess('delete', $entry))
+    <a href="javascript:void(0)" onclick="deleteEntry(this)" bp-button="delete" data-route="{{ url($crud->route.'/'.$entry->getKey()) }}" class="btn btn-sm btn-link" data-button-type="delete">
+        <i class="la la-trash"></i> <span>{{ trans('backpack::crud.delete') }}</span>
+    </a>
 @endif
-
-
 
 {{-- Button Javascript --}}
 {{-- - used right away in AJAX operations (ex: List) --}}
 {{-- - pushed to the end of the page, after jQuery is loaded, for non-AJAX operations (ex: Show) --}}
-@push('after_scripts') @if (request()->ajax()) @endpush @endif
+@push('after_scripts') @if (request()->ajax())
+    @endpush
+@endif
 @bassetBlock('backpack/crud/buttons/delete-button-'.app()->getLocale().'.js')
 <script>
 
@@ -53,12 +46,12 @@
                     $.ajax({
                         url: route,
                         type: 'DELETE',
-                        success: function(result) {
+                        success: function (result) {
                             if (result == 1) {
                                 // Redraw the table
                                 if (typeof crud != 'undefined' && typeof crud.table != 'undefined') {
                                     // Move to previous page in case of deleting the only item in table
-                                    if(crud.table.rows().count() === 1) {
+                                    if (crud.table.rows().count() === 1) {
                                         crud.table.page("previous");
                                     }
 
@@ -78,9 +71,9 @@
                                 // we have notification bubbles to show
                                 if (result instanceof Object) {
                                     // trigger one or more bubble notifications
-                                    Object.entries(result).forEach(function(entry, index) {
+                                    Object.entries(result).forEach(function (entry, index) {
                                         var type = entry[0];
-                                        entry[1].forEach(function(message, i) {
+                                        entry[1].forEach(function (message, i) {
                                             new Noty({
                                                 type: type,
                                                 text: message
@@ -98,7 +91,7 @@
                                 }
                             }
                         },
-                        error: function(result) {
+                        error: function (result) {
                             // Show an alert with the result
                             swal({
                                 title: "{!! trans('backpack::crud.delete_confirmation_not_title') !!}",
@@ -119,4 +112,6 @@
     // crud.addFunctionToDataTablesDrawEventQueue('deleteEntry');
 </script>
 @endBassetBlock
-@if (!request()->ajax()) @endpush @endif
+@if (!request()->ajax())
+    @endpush
+@endif

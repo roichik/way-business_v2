@@ -31,7 +31,6 @@ class Position extends BaseModel
         'title',
     ];
 
-
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */

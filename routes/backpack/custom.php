@@ -4,7 +4,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserCrudController;
 use App\Http\Controllers\Admin\PermissionCrudController;
 use App\Http\Controllers\Admin\RoleCrudController;
-use App\Http\Controllers\Admin\CompanyStructureTypeCrudController;
+use App\Http\Controllers\Admin\CompanyCrudController;
+use App\Http\Controllers\Admin\DivisionCrudController;
+use App\Http\Controllers\Admin\PositionCrudController;
+//use App\Http\Controllers\Admin\CompanyStructureTypeCrudController;
 //use App\Http\Controllers\Admin\CompanyStructureCrudController;
 
 // --------------------------
@@ -30,7 +33,11 @@ Route::group([
     Route::crud('permissions', PermissionCrudController::class);
     Route::crud('roles', RoleCrudController::class);
 
-    Route::crud('company-structure/types', CompanyStructureTypeCrudController::class);
+    Route::crud('/companies', CompanyCrudController::class);
+    Route::crud('/divisions', DivisionCrudController::class);
+    Route::crud('/positions', PositionCrudController::class);
+
+    //Route::crud('company-structure/types', CompanyStructureTypeCrudController::class);
     /*
     foreach(\App\Models\CompanyStructureType::get() as $companyStructure){
         Route::crud('company-structure/' . $companyStructure->slug, CompanyStructureCrudController::class);

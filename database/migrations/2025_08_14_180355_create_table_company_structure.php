@@ -25,10 +25,6 @@ return new class extends Migration {
         Schema::create('divisions', function (Blueprint $table) {
             $table->id();
             $table->string('title')->nullable(false);
-            $table->integer('parent_id')->nullable(true)->comment('For sorting');
-            $table->integer('lft')->default(0)->nullable(false)->comment('For sorting');
-            $table->integer('rgt')->default(0)->nullable(false)->comment('For sorting');
-            $table->integer('depth')->default(0)->nullable(false)->comment('For sorting');
             $table->timestamps();
         });
 

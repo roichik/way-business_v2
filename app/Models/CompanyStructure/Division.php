@@ -11,10 +11,6 @@ use Carbon\Carbon;
  *
  * @property int $id
  * @property string $title
- * @property int $parent_id
- * @property int $lft Сортировка
- * @property int $rgt
- * @property int $depth
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property Division $parent
@@ -35,14 +31,6 @@ class Division extends BaseModel
     protected $fillable = [
         'title',
     ];
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function parent()
-    {
-        return $this->belongsTo(self::class, 'parent_id');
-    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
