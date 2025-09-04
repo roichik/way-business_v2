@@ -44,8 +44,25 @@ class DivisionCrudController extends BaseCrudController
      */
     protected function setupListOperation()
     {
+        /*
+        if (!$this->crud->getRequest()->has('order')) {
+            $this->crud->orderBy('lft', 'desc');
+        }
+        */
+
         CRUD::column('id')->label('ID');
         CRUD::column('title')->type('text')->label('Название');
+        CRUD::column([
+            'label'     => 'Компания',
+            'type'      => 'select',
+            'name'      => 'company_id',
+            'entity'    => 'company',
+            'model'     => Company::class,
+            'attribute' => 'title',
+            'options'   => (function ($query) {
+                return $query->orderBy('title', 'ASC')->get();
+            }),
+        ]);
         CRUD::column('created_at')->label('Дата создания');
         CRUD::column('updated_at')->label('Дата обновления');
     }
@@ -57,6 +74,18 @@ class DivisionCrudController extends BaseCrudController
     {
         CRUD::column('id')->label('ID');
         CRUD::column('title')->type('text')->label('Название');
+        CRUD::column([
+            'label'     => 'Компания',
+            'type'      => 'select',
+            'name'      => 'company_id',
+            'entity'    => 'company',
+            'model'     => Company::class,
+            'attribute' => 'title',
+            'pivot'     => true,
+            'options'   => (function ($query) {
+                return $query->orderBy('title', 'ASC')->get();
+            }),
+        ]);
         CRUD::column('created_at')->label('Дата создания');
         CRUD::column('updated_at')->label('Дата обновления');
     }
@@ -67,12 +96,11 @@ class DivisionCrudController extends BaseCrudController
     protected function setupCreateOperation()
     {
         CRUD::field('title')->type('text')->label('Название');
-
         CRUD::field([
             'label'     => 'Компания',
-            'type'      => 'select_multiple',
-            'name'      => 'companies',
-            'entity'    => 'companies',
+            'type'      => 'select',
+            'name'      => 'company_id',
+            'entity'    => 'company',
             'model'     => Company::class,
             'attribute' => 'title',
             'pivot'     => true,

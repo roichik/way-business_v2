@@ -34,6 +34,7 @@ class Company extends BaseModel
      */
     protected $fillable = [
         'title',
+        'parent_id',
     ];
 
     /**
@@ -41,14 +42,14 @@ class Company extends BaseModel
      */
     public function parent()
     {
-        return $this->belongsTo(self::class, 'parent_id');
+        return $this->belongsTo(Company::class, 'parent_id');
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function divisions()
     {
-        return $this->belongsToMany(Division::class, 'company_rel_division', 'company_id', 'division_id');
+        return $this->hasMany(Division::class, 'company_id');
     }
 }

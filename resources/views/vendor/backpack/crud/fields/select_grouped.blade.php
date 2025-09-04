@@ -34,10 +34,10 @@
 
             @if (isset($field['model']) && isset($field['group_by']))
                 @foreach ($categories as $category)
-                    <optgroup label="{{ $category->{$field['group_by_attribute']} }}1111111111">
+                    <optgroup label="{{ $category->{$field['group_by_attribute']} }}">
                         @foreach ($category->{$field['group_by_relationship_back']} as $subEntry)
                             <option value="{{ $subEntry->getKey() }}"
-                                    @if($field['value'] instanceof \Illuminate\Support\Collection)
+                                    @if(!empty($field['value']) && $field['value'] instanceof \Illuminate\Support\Collection)
                                         @if(in_array($subEntry->getKey(), $field['value']->pluck('id')->all()))
                                         selected
                                       @endif

@@ -38,6 +38,7 @@ class CompanyCrudController extends BaseCrudController
         CRUD::setModel(Company::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/companies');
         CRUD::setEntityNameStrings('Компания', 'Компании');
+
     }
 
     /**
@@ -45,8 +46,24 @@ class CompanyCrudController extends BaseCrudController
      */
     protected function setupListOperation()
     {
+        //change default order key
+        if (!$this->crud->getRequest()->has('order')) {
+            $this->crud->orderBy('lft', 'asc');
+        }
+
         CRUD::column('id')->label('ID');
         CRUD::column('title')->type('text')->label('Название');
+        CRUD::column([
+            'label'     => 'Управляющая компания',
+            'type'      => 'select',
+            'name'      => 'parent_id',
+            'entity'    => 'parent',
+            'model'     => Company::class,
+            'attribute' => 'title',
+            'options'   => (function ($query) {
+                return $query->orderBy('title', 'ASC')->get();
+            }),
+        ]);
         CRUD::column('created_at')->label('Дата создания');
         CRUD::column('updated_at')->label('Дата обновления');
     }
@@ -58,6 +75,17 @@ class CompanyCrudController extends BaseCrudController
     {
         CRUD::column('id')->label('ID');
         CRUD::column('title')->type('text')->label('Название');
+        CRUD::column([
+            'label'     => 'Управляющая компания',
+            'type'      => 'select',
+            'name'      => 'parent_id',
+            'entity'    => 'parent',
+            'model'     => Company::class,
+            'attribute' => 'title',
+            'options'   => (function ($query) {
+                return $query->orderBy('title', 'ASC')->get();
+            }),
+        ]);
         CRUD::column('created_at')->label('Дата создания');
         CRUD::column('updated_at')->label('Дата обновления');
     }
@@ -68,6 +96,24 @@ class CompanyCrudController extends BaseCrudController
     protected function setupCreateOperation()
     {
         CRUD::field('title')->type('text')->label('Название');
+        CRUD::field([
+            'label'         => 'Управляющая компания',
+            'type'          => 'select',
+            'name'          => 'parent_id',
+            'entity'        => 'parent',
+            'model'         => Company::class,
+            'attribute'     => 'title',
+            'options'       => (function ($query) {
+                $query
+                    ->orderBy('title', 'ASC');
+
+                if ($this->crud->getCurrentEntryId()) {
+                    $query->where('id', '!=', $this->crud->getCurrentEntryId());
+                }
+
+                return $query->get();
+            }),
+        ]);
     }
 
     /**
@@ -84,6 +130,6 @@ class CompanyCrudController extends BaseCrudController
     protected function setupReorderOperation()
     {
         CRUD::set('reorder.label', 'title');
-        CRUD::set('reorder.max_level', 1);
+        CRUD::set('reorder.max_level', 3);
     }
 }

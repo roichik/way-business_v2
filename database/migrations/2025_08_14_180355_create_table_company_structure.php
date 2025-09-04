@@ -13,63 +13,61 @@ return new class extends Migration {
         //Компания, филиалы
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('parent_id')->nullable(true);
             $table->string('title')->nullable(false);
-            $table->integer('parent_id')->nullable(true)->comment('For sorting');
             $table->integer('lft')->default(0)->nullable(false)->comment('For sorting');
             $table->integer('rgt')->default(0)->nullable(false)->comment('For sorting');
             $table->integer('depth')->default(0)->nullable(false)->comment('For sorting');
             $table->timestamps();
+
+            $table
+                ->foreign('parent_id', 'companies_company_fk')
+                ->on('companies')
+                ->references('id')
+                ->onUpdate('cascade')
+                ->nullOnDelete();
         });
 
         //Подразделения
         Schema::create('divisions', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->nullable(false);
-            $table->timestamps();
-        });
-
-        Schema::create('company_rel_division', function (Blueprint $table) {
+            $table->unsignedBigInteger('parent_id')->nullable(true);
             $table->unsignedBigInteger('company_id')->nullable(true);
-            $table->unsignedBigInteger('division_id')->nullable(true);
+            $table->string('title')->nullable(false);
+            $table->integer('lft')->default(0)->nullable(false)->comment('For sorting');
+            $table->integer('rgt')->default(0)->nullable(false)->comment('For sorting');
+            $table->integer('depth')->default(0)->nullable(false)->comment('For sorting');
+            $table->timestamps();
 
             $table
-                ->foreign('company_id', 'company_rel_division_company_fk')
+                ->foreign('company_id', 'divisions_company_fk')
                 ->on('companies')
                 ->references('id')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
+
 
             $table
-                ->foreign('division_id', 'company_rel_division_division_fk')
+                ->foreign('parent_id', 'divisions_parent_fk')
                 ->on('divisions')
                 ->references('id')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
         });
 
         //Должности
         Schema::create('positions', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('division_id')->nullable(true);
             $table->string('title')->nullable(false);
             $table->timestamps();
-        });
-
-        Schema::create('division_rel_position', function (Blueprint $table) {
-            $table->unsignedBigInteger('division_id')->nullable(true);
-            $table->unsignedBigInteger('position_id')->nullable(true);
 
             $table
-                ->foreign('division_id', 'division_rel_position_division_fk')
+                ->foreign('division_id', 'positions_division_fk')
                 ->on('divisions')
                 ->references('id')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
-            $table
-                ->foreign('position_id', 'division_rel_position_position_fk')
-                ->on('positions')
-                ->references('id')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
         });
     }
 

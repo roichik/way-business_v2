@@ -10,10 +10,11 @@ use Carbon\Carbon;
  * Class Position
  *
  * @property int $id
+ * @property int $division_id
  * @property string $title
  * @property Carbon $created_at
  * @property Carbon $updated_at
- * @property Division[] $divisions
+ * @property Division $division
  */
 class Position extends BaseModel
 {
@@ -28,14 +29,15 @@ class Position extends BaseModel
      * @var string[]
      */
     protected $fillable = [
+        'division_id',
         'title',
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function divisions()
+    public function division()
     {
-        return $this->belongsToMany(Division::class, 'division_rel_position', 'position_id', 'division_id');
+        return $this->belongsTo(Division::class, 'division_id');
     }
 }
