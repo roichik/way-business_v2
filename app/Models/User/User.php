@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\User;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Security\Permission;
@@ -28,6 +28,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property UserDetail $userDetail
+ * @property UserAccess $userAccess
  * @property Role[] $roles
  * @property Permission[] $permissions
  */
@@ -77,5 +78,13 @@ class User extends Authenticatable
     public function userDetail()
     {
         return $this->hasOne(UserDetail::class, 'user_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function userAccess()
+    {
+        return $this->hasOne(UserAccess::class, 'user_id');
     }
 }

@@ -3,8 +3,7 @@
 namespace App\Services\User\Operations;
 
 use App\Dto\PaginationDto;
-use App\Exceptions\Exception;
-use App\Models\User;
+use App\Models\User\User;
 use App\Services\User\Dto\CreateUserDto;
 use Illuminate\Support\Facades\DB;
 

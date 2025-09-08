@@ -23,7 +23,6 @@ class AccessGroupFlagDictionary extends AbstractDictionary
      */
     protected static $titleCollection = [
         self::ACCESS_ONLY_AT_THE_USER_COMPANY_LEVEL => 'Доступ только на уровне компании пользователя',
-
     ];
 
     /**

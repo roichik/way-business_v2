@@ -45,6 +45,7 @@ class DivisionCrudController extends BaseCrudController
      */
     protected function setupListOperation()
     {
+        parent::setupListOperation();
         /*
         if (!$this->crud->getRequest()->has('order')) {
             $this->crud->orderBy('lft', 'desc');

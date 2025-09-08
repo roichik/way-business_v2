@@ -47,6 +47,8 @@ class CompanyCrudController extends BaseCrudController
      */
     protected function setupListOperation()
     {
+        parent::setupListOperation();
+
         //change default order key
         if (!$this->crud->getRequest()->has('order')) {
             $this->crud->orderBy('lft', 'asc');

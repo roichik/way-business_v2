@@ -2,7 +2,7 @@
 
 namespace App\Http\Responses\Api\Profile;
 
-use App\Models\User;
+use App\Models\User\User;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**

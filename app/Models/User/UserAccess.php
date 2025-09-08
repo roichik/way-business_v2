@@ -1,44 +1,44 @@
 <?php
 
-namespace App\Models\Security;
+namespace App\Models\User;
 
 use App\Dictionaries\Security\AccessGroupFlagDictionary;
 use App\Models\BaseModel;
 use App\Models\CompanyStructure\Company;
-use App\Models\User\UserAccess;
+use App\Models\Security\AccessGroup;
+use App\Models\Security\Permission;
+use App\Models\Security\Role;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Carbon\Carbon;
 
 /**
- * Class AccessGroup
+ * Class UserAccess
  *
  * @property int $id
- * @property string $title
- * @property string|null $description
+ * @property int $user_id
  * @property array|null $flags
+ * @property User $user
  * @property Carbon $created_at
  * @property Carbon $updated_at
- * @property UserAccess $userAccess
+ * @property AccessGroup[] $accessGroups
  * @property Role[] $roles
  * @property Permission[] $permissions
  * @property Company[] $companies
  * @see AccessGroupFlagDictionary
  */
-class AccessGroup extends BaseModel
+class UserAccess extends BaseModel
 {
     use CrudTrait;
 
     /**
      * @var string
      */
-    protected $table = 'admin_access_groups';
+    protected $table = 'user_access';
 
     /**
      * @var string[]
      */
     protected $fillable = [
-        'title',
-        'description',
         'flags',
     ];
 
@@ -49,32 +49,12 @@ class AccessGroup extends BaseModel
         'flags' => 'array',
     ];
 
-    protected $fakeColumns = [
-        'flags',
-    ];
-
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function userAccess()
+    public function user()
     {
-        return $this->belongsToMany(UserAccess::class, 'user_access_groups', 'access_group_id', 'user_access_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function roles()
-    {
-        return $this->belongsToMany(Role::class, 'admin_access_group_roles', 'access_group_id', 'role_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function permissions()
-    {
-        return $this->belongsToMany(Permission::class, 'admin_access_group_permissions', 'access_group_id', 'permission_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     /**
@@ -83,6 +63,30 @@ class AccessGroup extends BaseModel
     public function accessGroup()
     {
         return $this->belongsToMany(AccessGroup::class, 'user_access_groups', 'user_access_id', 'access_group_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'user_access_group_roles', 'user_access_id', 'role_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class, 'user_access_group_permissions', 'user_access_id', 'permission_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function companies()
+    {
+        return $this->belongsToMany(Company::class, 'user_access_group_companies', 'user_access_id', 'company_id');
     }
 
     /**
@@ -118,3 +122,4 @@ class AccessGroup extends BaseModel
         return in_array($flag, $this->flags);
     }
 }
+

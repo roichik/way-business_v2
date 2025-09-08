@@ -43,6 +43,7 @@ class AccessGroupCrudController extends BaseCrudController
         CRUD::setRoute(config('backpack.base.route_prefix') . '/access-group');
         CRUD::setEntityNameStrings('Группа доступа', 'Группы доступа');
         Widget::add()->type('script')->content('/js/admin/access-group.js');
+
     }
 
     /**
@@ -54,7 +55,69 @@ class AccessGroupCrudController extends BaseCrudController
 
         CRUD::column('id')->label('ID');
         CRUD::column('title')->type('text')->label('Название');
-        CRUD::column('flags')->label('Дополнительные параметры');
+        CRUD::column([
+            'label'             => 'Роли и права доступа',
+            'field_unique_name' => 'role_permission',
+            'type'              => 'checklist_dependency',
+            'name'              => 'roles,permissions',
+            'subfields'         => [
+                'primary'   => [
+                    'label'            => 'Роли',
+                    'name'             => 'roles',
+                    'entity'           => 'roles',
+                    'entity_secondary' => 'permissions',
+                    'attribute'        => 'name',
+                    'model'            => Role::class,
+                    'pivot'            => true,
+                    'number_columns'   => 3,
+                ],
+                'secondary' => [
+                    'label'          => 'Права доступа',
+                    'name'           => 'permissions',
+                    'entity'         => 'permissions',
+                    'entity_primary' => 'roles',
+                    'attribute'      => 'name',
+                    'model'          => Permission::class,
+                    'pivot'          => true,
+                    'number_columns' => 3,
+                ],
+            ],
+        ]);
+
+
+        //Флаги
+
+            CRUD::column([
+                'label'    => 'Дополнительные параметры',
+                'type'     => 'closure',
+                'name'     => 'flags',
+                'function' => function (AccessGroup $entry) {
+                    $values = [];
+                    foreach ($entry->flags as $k => $b) {
+                        foreach (AccessGroupFlagDictionary::getTitleCollection() as $key => $label) {
+                            if ($key != $k || !$b) {
+                                continue;
+                            }
+                            $values[] = $label;
+                        }
+                    }
+
+                    return implode(', ', $values);
+                }
+            ]);
+
+        //Компании
+        CRUD::column([
+            'label'           => 'Компании',
+            'type'            => 'checklist',
+            'name'            => 'companies',
+            'entity'          => 'companies',
+            'attribute'       => 'title',
+            'model'           => Company::class,
+            'pivot'           => true,
+            'show_select_all' => true,
+        ]);
+
         CRUD::column('created_at')->label('Дата создания');
         CRUD::column('updated_at')->label('Дата редактирование');
     }
@@ -66,7 +129,20 @@ class AccessGroupCrudController extends BaseCrudController
     {
         CRUD::column('id')->label('ID');
         CRUD::column('title')->type('text')->label('Название');
-        CRUD::column('flags')->label('Дополнительные параметры');
+
+        //Флаги
+        $flags = AccessGroup::find($this->crud->getCurrentEntryId())->flags;
+        foreach (AccessGroupFlagDictionary::getTitleCollection() as $key => $label) {
+            CRUD::column([
+                'label'    => $label,
+                'type'     => 'checkbox',
+                'name'     => $key,
+                'default'  => array_key_exists($key, $flags) && (bool)$flags[$key],
+                'fake'     => true,
+                'store_in' => 'flags',
+            ]);
+        }
+
         CRUD::column('created_at')->label('Дата создания');
         CRUD::column('updated_at')->label('Дата редактирование');
     }
@@ -108,7 +184,7 @@ class AccessGroupCrudController extends BaseCrudController
             ],
         ]);
 
-        //
+        //Флаги
         foreach (AccessGroupFlagDictionary::getTitleCollection() as $key => $label) {
             CRUD::field([
                 'label'    => $label,
@@ -120,6 +196,7 @@ class AccessGroupCrudController extends BaseCrudController
             ]);
         }
 
+        //Компании
         CRUD::field([
             'label'           => 'Компании',
             'type'            => 'checklist',
@@ -130,9 +207,6 @@ class AccessGroupCrudController extends BaseCrudController
             'pivot'           => true,
             'show_select_all' => true,
             'number_columns'  => 2,
-            'attributes' => [
-                'class' => 'd-none',
-            ]
         ]);
     }
 

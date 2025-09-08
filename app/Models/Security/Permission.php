@@ -2,6 +2,7 @@
 
 namespace App\Models\Security;
 
+use App\Models\User\UserAccess;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Carbon\Carbon;
 use Spatie\Permission\Models\Permission as SpatiePermission;
@@ -15,6 +16,7 @@ use Spatie\Permission\Models\Permission as SpatiePermission;
  * @property string $description
  * @property Carbon $created_at
  * @property Carbon $updated_at
+ * @property UserAccess $userAccess
  */
 class Permission extends SpatiePermission
 {
@@ -43,5 +45,14 @@ class Permission extends SpatiePermission
     public function getConcatGroupAndNameLabelsAttribute()
     {
         return $this->groupLabel . ' - ' . $this->nameLabel;
+    }
+
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function userAccess()
+    {
+        return $this->belongsToMany(UserAccess::class, 'user_access_group_permissions', 'permission_id', 'user_access_id');
     }
 }

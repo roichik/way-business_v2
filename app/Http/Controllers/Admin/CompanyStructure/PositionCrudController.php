@@ -45,6 +45,8 @@ class PositionCrudController extends BaseCrudController
      */
     protected function setupListOperation()
     {
+        parent::setupListOperation();
+
         CRUD::column('id')->label('ID');
         CRUD::column('title')->type('text')->label('Название');
         CRUD::column([
