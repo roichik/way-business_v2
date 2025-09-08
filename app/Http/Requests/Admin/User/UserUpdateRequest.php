@@ -5,9 +5,9 @@ namespace App\Http\Requests\Admin\User;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Class UserCreateRequest
+ * Class UserUpdateRequest
  */
-class UserCreateRequest extends FormRequest
+class UserUpdateRequest extends FormRequest
 {
     /**
      * @return array
@@ -15,9 +15,7 @@ class UserCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'nickname'               => ['required', 'string', 'max:100'],
-            'password'               => ['required', 'min:6', 'max:40', 'string'],
-            'email'                  => ['required', 'unique:users', 'email', 'max:50'],
+            'password'               => ['nullable', 'min:6', 'max:40', 'string'],
             'email_verified_at'      => ['nullable', 'date'],
             'phone'                  => ['nullable', 'string', 'max:50'],
             'phone_verified_at'      => ['nullable', 'date'],

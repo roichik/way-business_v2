@@ -18,10 +18,6 @@ use Carbon\Carbon;
  * @property array|null $flags
  * @property Carbon $created_at
  * @property Carbon $updated_at
- * @property UserAccess $userAccess
- * @property Role[] $roles
- * @property Permission[] $permissions
- * @property Company[] $companies
  * @see AccessGroupFlagDictionary
  */
 class AccessGroup extends BaseModel
@@ -103,6 +99,18 @@ class AccessGroup extends BaseModel
         }
 
         return $flags;
+    }
+
+    /**
+     * @return array
+     */
+    public function flagById($id, $default = null)
+    {
+        if (!$this->flags) {
+            return [];
+        }
+
+        return $this->flags[$id] ?? $default;
     }
 
     /**

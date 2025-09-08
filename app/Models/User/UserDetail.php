@@ -14,9 +14,9 @@ use Carbon\Carbon;
  *
  * @property int $id
  * @property int $user_id
- * @property int $company_id
- * @property int $division_id
- * @property int $position_id
+ * @property int|null $company_id
+ * @property int|null $division_id
+ * @property int|null $position_id
  * @property string $first_name
  * @property string $last_name
  * @property string|null $father_name
@@ -46,6 +46,10 @@ class UserDetail extends BaseModel
         'father_name',
         'gender',
         'birthday_at',
+        'company_id',
+        'division_id',
+        'position_id',
+
     ];
 
     /**
@@ -73,7 +77,7 @@ class UserDetail extends BaseModel
      */
     public function company()
     {
-        return $this->belongsTo(Company::class);
+        return $this->belongsTo(Company::class, 'company_id');
     }
 
     /**
@@ -81,7 +85,7 @@ class UserDetail extends BaseModel
      */
     public function division()
     {
-        return $this->belongsTo(Division::class);
+        return $this->belongsTo(Division::class, 'division_id');
     }
 
     /**
@@ -89,6 +93,6 @@ class UserDetail extends BaseModel
      */
     public function position()
     {
-        return $this->belongsTo(Position::class);
+        return $this->belongsTo(Position::class, 'position_id');
     }
 }

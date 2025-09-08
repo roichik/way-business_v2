@@ -26,12 +26,12 @@ return new class extends Migration
         });
 
         Schema::create('user_access_groups', function (Blueprint $table) {
-            $table->unsignedBigInteger('user_access_id')->nullable(false);
+            $table->unsignedBigInteger('user_id')->nullable(false);
             $table->unsignedBigInteger('access_group_id')->nullable(false);
 
             $table
-                ->foreign('user_access_id', 'user_access_groups_ua_fk')
-                ->on('user_access')
+                ->foreign('user_id', 'user_access_groups_u_fk')
+                ->on('users')
                 ->references('id')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
@@ -44,57 +44,57 @@ return new class extends Migration
                 ->cascadeOnDelete();
         });
 
-        Schema::create('user_access_group_roles', function (Blueprint $table) {
-            $table->unsignedBigInteger('user_access_id')->nullable(false);
+        Schema::create('user_access_roles', function (Blueprint $table) {
+            $table->unsignedBigInteger('user_id')->nullable(false);
             $table->unsignedBigInteger('role_id')->nullable(false);
 
             $table
-                ->foreign('user_access_id', 'user_access_group_roles_ua_fk')
-                ->on('user_access')
+                ->foreign('user_id', 'user_access_roles_u_fk')
+                ->on('users')
                 ->references('id')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
 
             $table
-                ->foreign('role_id', 'user_access_group_roles_role_fk')
+                ->foreign('role_id', 'user_access_roles_role_fk')
                 ->on('admin_roles')
                 ->references('id')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
         });
 
-        Schema::create('user_access_group_permissions', function (Blueprint $table) {
-            $table->unsignedBigInteger('user_access_id')->nullable(false);
+        Schema::create('user_access_permissions', function (Blueprint $table) {
+            $table->unsignedBigInteger('user_id')->nullable(false);
             $table->unsignedBigInteger('permission_id')->nullable(false);
 
             $table
-                ->foreign('user_access_id', 'user_access_group_permissions_ua_fk')
-                ->on('user_access')
+                ->foreign('user_id', 'user_access_permissions_u_fk')
+                ->on('users')
                 ->references('id')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
 
             $table
-                ->foreign('permission_id', 'user_access_group_permissions_p_fk')
+                ->foreign('permission_id', 'user_access_permissions_p_fk')
                 ->on('admin_permissions')
                 ->references('id')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
         });
 
-        Schema::create('user_access_group_companies', function (Blueprint $table) {
-            $table->unsignedBigInteger('user_access_id')->nullable(false);
+        Schema::create('user_access_companies', function (Blueprint $table) {
+            $table->unsignedBigInteger('user_id')->nullable(false);
             $table->unsignedBigInteger('company_id')->nullable(false);
 
             $table
-                ->foreign('user_access_id', 'user_access_group_companies_ua_fk')
-                ->on('admin_access_groups')
+                ->foreign('user_id', 'user_access_companies_ua_fk')
+                ->on('users')
                 ->references('id')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
 
             $table
-                ->foreign('company_id', 'user_access_group_companies_c_fk')
+                ->foreign('company_id', 'user_access_companies_c_fk')
                 ->on('companies')
                 ->references('id')
                 ->cascadeOnUpdate()
@@ -107,9 +107,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_access_group_companies');
-        Schema::dropIfExists('user_access_group_permissions');
-        Schema::dropIfExists('user_access_group_roles');
+        Schema::dropIfExists('user_access_companies');
+        Schema::dropIfExists('user_access_permissions');
+        Schema::dropIfExists('user_access_roles');
         Schema::dropIfExists('user_access_groups');
         Schema::dropIfExists('user_access');
     }

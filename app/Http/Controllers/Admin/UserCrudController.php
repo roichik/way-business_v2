@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Dictionaries\Security\AccessGroupFlagDictionary;
 use App\Dictionaries\User\GenderDictionary;
 use App\Http\Requests\Admin\User\UserCreateRequest;
+use App\Http\Requests\Admin\User\UserUpdateRequest;
+use App\Models\CompanyStructure\Company;
+use App\Models\CompanyStructure\Division;
+use App\Models\CompanyStructure\Position;
 use App\Models\Security\Permission;
 use App\Models\Security\Role;
 use App\Models\User\User;
@@ -108,41 +113,11 @@ class UserCrudController extends BaseCrudController
             ->label('Пол')
             ->options(GenderDictionary::getTitleCollection())
             ->tab('Общие сведенья');
-        CRUD::field('is_enabled')->type('boolean')->label('Активный')->tab('Общие сведенья');
         CRUD::field('userDetail.birthday_at')->type('date')->label('День рождения')->tab('Общие сведенья');
-        CRUD::field('created_at')->attributes(['disabled' => 'disabled'])->label('Дата создания')->tab('Общие сведенья');
-        CRUD::field('updated_at')->attributes(['disabled' => 'disabled'])->label('Дата обновления')->tab('Общие сведенья');
-/*
-        CRUD::field([
-            'label'             => 'Группы доступа',
-            'field_unique_name' => 'role_permission',
-            'type'              => 'checklist_dependency',
-            'name'              => 'roles,permissions',
-            'tab'               => 'Права доступа',
-            'subfields'         => [
-                'primary'   => [
-                    'label'            => 'Роли',
-                    'name'             => 'userAccess.roles',
-                    'entity'           => 'roles',
-                    'entity_secondary' => 'permissions',
-                    'attribute'        => 'name',
-                    'model'            => Role::class,
-                    'pivot'            => true,
-                    'number_columns'   => 3,
-                ],
-                'secondary' => [
-                    'label'          => 'Права доступа',
-                    'name'           => 'userAccess.permissions',
-                    'entity'         => 'permissions',
-                    'entity_primary' => 'roles',
-                    'attribute'      => 'name',
-                    'model'          => Permission::class,
-                    'pivot'          => true,
-                    'number_columns' => 3,
-                ],
-            ],
-        ]);
-*/
+        $this->addCompanyStructureFields();
+        CRUD::field('is_enabled')->type('boolean')->label('Активный')->tab('Общие сведенья');
+
+        $this->addAccessFields();
     }
 
     /**
@@ -150,6 +125,8 @@ class UserCrudController extends BaseCrudController
      */
     protected function setupUpdateOperation()
     {
+        CRUD::setValidation(UserUpdateRequest::class);
+
         CRUD::field('nickname')->type('text')->label('Пользователь')->attributes(['disabled' => 'disabled'])->tab('Общие сведенья');
         CRUD::field('email')->type('text')->label('Email')->attributes(['autocomplete' => 'off', 'disabled' => 'disabled'])->tab('Общие сведенья');
         CRUD::field('password')->label('Пароль')->value('')->attributes(['autocomplete' => 'off'])->tab('Общие сведенья');
@@ -164,22 +141,82 @@ class UserCrudController extends BaseCrudController
             ->label('Пол')
             ->options(GenderDictionary::getTitleCollection())
             ->tab('Общие сведенья');
-        CRUD::field('is_enabled')->type('boolean')->label('Активный')->tab('Общие сведенья');
         CRUD::field('userDetail.birthday_at')->type('date')->label('День рождения')->tab('Общие сведенья');
-        CRUD::field('created_at')->attributes(['disabled' => 'disabled'])->label('Дата создания')->tab('Общие сведенья');
-        CRUD::field('updated_at')->attributes(['disabled' => 'disabled'])->label('Дата обновления')->tab('Общие сведенья');
+        $this->addCompanyStructureFields();
+        CRUD::field('is_enabled')->type('boolean')->label('Активный')->tab('Общие сведенья');
 
+        $this->addAccessFields();
+    }
 
+    /**
+     * @return void
+     */
+    private function addCompanyStructureFields()
+    {
+        CRUD::field([
+            'label'         => 'Компания',
+            'type'          => 'select',
+            'name'          => 'userDetail.company_id',
+            'entity'        => 'userDetail.company_id',
+            'model'         => Company::class,
+            'attribute'     => 'title',
+            'options'       => (function ($query) {
+                return $query->orderBy('title', 'ASC')->get();
+            }),
+            'relation_type' => 'BelongsTo',
+            'tab'           => 'Общие сведенья',
+        ]);
+        CRUD::field([
+            'label'         => 'Подразделение/отдел',
+            'type'          => 'select',
+            'name'          => 'userDetail.division_id',
+            'entity'        => 'userDetail.division_id',
+            'model'         => Division::class,
+            'attribute'     => 'title',
+            'options'       => (function ($query) {
+                return $query->orderBy('title', 'ASC')->get();
+            }),
+            'relation_type' => 'BelongsTo',
+            'tab'           => 'Общие сведенья',
+        ]);
+        CRUD::field([
+            'label'         => 'Должность',
+            'type'          => 'select',
+            'name'          => 'userDetail.position_id',
+            'entity'        => 'userDetail.position_id',
+            'model'         => Position::class,
+            'attribute'     => 'title',
+            'options'       => (function ($query) {
+                return $query->orderBy('title', 'ASC')->get();
+            }),
+            'relation_type' => 'BelongsTo',
+            'tab'           => 'Общие сведенья',
+        ]);
+    }
+
+    /**
+     * @return void
+     */
+    private function addAccessFields()
+    {
         CRUD::field([
             'label'             => 'Группы доступа',
+            'field_unique_name' => 'access_groups',
+            'type'              => 'checklist',
+            'name'              => 'accessGroups',
+            'tab'               => 'Права доступа',
+        ]);
+
+        CRUD::field([
+            'label'             => 'Роли и права доступа',
             'field_unique_name' => 'role_permission',
             'type'              => 'checklist_dependency',
-            'name'              => 'roles,permissions',
+            'name'              => 'accessRoles,accessPermissions',
             'tab'               => 'Права доступа',
             'subfields'         => [
                 'primary'   => [
                     'label'            => 'Роли',
-                    'name'             => 'userAccess.roles',
+                    'name'             => 'accessRoles',
                     'entity'           => 'roles',
                     'entity_secondary' => 'permissions',
                     'attribute'        => 'name',
@@ -189,7 +226,7 @@ class UserCrudController extends BaseCrudController
                 ],
                 'secondary' => [
                     'label'          => 'Права доступа',
-                    'name'           => 'userAccess.permissions',
+                    'name'           => 'accessPermissions',
                     'entity'         => 'permissions',
                     'entity_primary' => 'roles',
                     'attribute'      => 'name',
@@ -198,6 +235,40 @@ class UserCrudController extends BaseCrudController
                     'number_columns' => 3,
                 ],
             ],
+        ]);
+
+        //Флаги
+        foreach (AccessGroupFlagDictionary::getTitleCollection() as $id => $label) {
+            $flagValue = AccessGroupFlagDictionary::getDefaultValueById($id);
+            if ($this->crud->getCurrentEntryId()) {
+                $flagValue = User::find($this->crud->getCurrentEntryId())->userAccess->flagById(
+                    $id,
+                    AccessGroupFlagDictionary::getDefaultValueById($id)
+                );
+            }
+            CRUD::field([
+                'label'    => $label,
+                'type'     => 'checkbox',
+                'name'     => $id,
+                'default'  => $flagValue,
+                'fake'     => true,
+                'store_in' => 'userAccess.flags',
+                'tab'      => 'Права доступа',
+            ]);
+        }
+
+        //Компании
+        CRUD::field([
+            'label'           => 'Компании',
+            'type'            => 'checklist',
+            'name'            => 'accessCompanies',
+            'entity'          => 'accessCompanies',
+            'attribute'       => 'title',
+            'model'           => Company::class,
+            'pivot'           => true,
+            'show_select_all' => true,
+            'number_columns'  => 2,
+            'tab'             => 'Права доступа',
         ]);
     }
 
@@ -212,6 +283,8 @@ class UserCrudController extends BaseCrudController
         }
 
         $response = $this->traitStore();
+        $this->updateUserAccessFlags();
+        $this->updateUserCompanyStructure();
 
         return $response;
     }
@@ -221,20 +294,57 @@ class UserCrudController extends BaseCrudController
      */
     public function update()
     {
-        $all = $this->crud->getRequest()->request->all();
-        /** @var User $user */
-        $user = User::find($this->crud->getCurrentEntryId());
-        if(!$user->userAccess){
-            $user->userAccess()->create();
-        }
-
         $password = $this->crud->getRequest()->request->get('password');
         if ($password === null || $password === '') {
             $this->crud->getRequest()->request->remove('password');
         }
 
         $response = $this->traitUpdate();
+        $this->updateUserAccessFlags();
+        $this->updateUserCompanyStructure();
 
         return $response;
+    }
+
+    /**
+     * @return void
+     */
+    private function updateUserCompanyStructure()
+    {
+        $all = $this->crud->getRequest()->request->all();
+        $userDetail = User::find($this->crud->getCurrentEntryId())->userDetail;
+        $userDetail
+            ->fill([
+                'company_id'  => $all['userDetail']['company_id'],
+                'division_id' => $all['userDetail']['division_id'],
+                'position_id' => $all['userDetail']['position_id'],
+            ]);
+        $userDetail->save();
+    }
+
+    /**
+     * @return void
+     */
+    private function updateUserAccessFlags()
+    {
+        $all = $this->crud->getRequest()->request->all();
+        $flags = [];
+        foreach (AccessGroupFlagDictionary::getCollection() as $id) {
+            if (array_key_exists($id, $all)) {
+                $flags[$id] = $all[$id];
+                continue;
+            }
+            $flags[$id] = AccessGroupFlagDictionary::getDefaultValueById($id);
+        }
+
+        /** @var User $user */
+        $user = User::find($this->crud->getCurrentEntryId());
+        if (!$user->userAccess) {
+            $user->userAccess()->create();
+            $user->refresh();
+        }
+
+        $user->userAccess->flags = $flags;
+        $user->userAccess->save();
     }
 }

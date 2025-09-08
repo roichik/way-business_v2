@@ -2,7 +2,7 @@
 
 namespace App\Models\Security;
 
-use App\Models\User\UserAccess;
+use App\Models\User\User;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Carbon\Carbon;
 use Spatie\Permission\Models\Role as SpatieRole;
@@ -15,7 +15,7 @@ use Spatie\Permission\Models\Role as SpatieRole;
  * @property string $description
  * @property Carbon $created_at
  * @property Carbon $updated_at
- * @property UserAccess $userAccess
+ * @property User $user
  */
 class Role extends SpatieRole
 {
@@ -26,6 +26,6 @@ class Role extends SpatieRole
      */
     public function userAccess()
     {
-        return $this->belongsToMany(UserAccess::class, 'user_access_group_roles', 'role_id', 'user_access_id');
+        return $this->belongsToMany(User::class, 'user_access_group_roles', 'role_id', 'user_id');
     }
 }

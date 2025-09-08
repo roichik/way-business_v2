@@ -2,6 +2,7 @@
 
 namespace App\Models\Security;
 
+use App\Models\User\User;
 use App\Models\User\UserAccess;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Carbon\Carbon;
@@ -9,6 +10,7 @@ use Spatie\Permission\Models\Permission as SpatiePermission;
 
 /**
  * Class Permission
+ *
  * @property integer $id
  * @property string $name
  * @property string $group
@@ -16,7 +18,7 @@ use Spatie\Permission\Models\Permission as SpatiePermission;
  * @property string $description
  * @property Carbon $created_at
  * @property Carbon $updated_at
- * @property UserAccess $userAccess
+ * @property User $user
  */
 class Permission extends SpatiePermission
 {
@@ -29,7 +31,6 @@ class Permission extends SpatiePermission
     {
         return $this->name ? ucfirst(str_replace('-', ' ', $this->name)) : null;
     }
-
 
     /**
      * @return string|null
@@ -47,12 +48,11 @@ class Permission extends SpatiePermission
         return $this->groupLabel . ' - ' . $this->nameLabel;
     }
 
-
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function userAccess()
+    public function user()
     {
-        return $this->belongsToMany(UserAccess::class, 'user_access_group_permissions', 'permission_id', 'user_access_id');
+        return $this->belongsToMany(User::class, 'user_access_group_permissions', 'permission_id', 'user_id');
     }
 }

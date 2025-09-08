@@ -11,9 +11,9 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('user_detail', function (Blueprint $table) {
-            $table->unsignedBigInteger('company_id')->nullable(false)->after('user_id');
-            $table->unsignedBigInteger('division_id')->after('company_id');
-            $table->unsignedBigInteger('position_id')->after('division_id');
+            $table->unsignedBigInteger('company_id')->nullable(true)->after('user_id');
+            $table->unsignedBigInteger('division_id')->nullable(true)->after('company_id');
+            $table->unsignedBigInteger('position_id')->nullable(true)->after('division_id');
         });
     }
 
