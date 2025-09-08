@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Admin\Security;
 
+use App\Dictionaries\Security\AccessGroupFlagDictionary;
 use App\Http\Controllers\Admin\BaseCrudController;
+use App\Models\CompanyStructure\Company;
 use App\Models\Security\AccessGroup;
 use App\Models\Security\Permission;
 use App\Models\Security\Role;
@@ -12,6 +14,7 @@ use Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Backpack\CRUD\app\Library\Widget;
 
 /**
  * Class AccessGroupCrudController
@@ -39,6 +42,7 @@ class AccessGroupCrudController extends BaseCrudController
         CRUD::setModel(AccessGroup::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/access-group');
         CRUD::setEntityNameStrings('Группа доступа', 'Группы доступа');
+        Widget::add()->type('script')->content('/js/admin/access-group.js');
     }
 
     /**
@@ -75,58 +79,61 @@ class AccessGroupCrudController extends BaseCrudController
         //CRUD::setValidation(RoleCreateRequest::class);
         CRUD::field('title')->type('text')->label('Название');
         CRUD::field('description')->type('text')->label('Описание');
-
-        /**
-        CRUD::field([   // two interconnected entities
+        CRUD::field([
             'label'             => 'Роли и права доступа',
             'field_unique_name' => 'role_permission',
             'type'              => 'checklist_dependency',
-            'name'              => 'roles,permissions', // the methods that define the relationship in your Models
+            'name'              => 'roles,permissions',
             'subfields'         => [
-                'primary' => [
+                'primary'   => [
                     'label'            => 'Роли',
-                    'name'             => 'roles', // the method that defines the relationship in your Model
-                    'entity'           => 'roles', // the method that defines the relationship in your Model
-                    'entity_secondary' => 'permissions', // the method that defines the relationship in your Model
-                    'attribute'        => 'name', // foreign key attribute that is shown to user
+                    'name'             => 'roles',
+                    'entity'           => 'roles',
+                    'entity_secondary' => 'permissions',
+                    'attribute'        => 'name',
                     'model'            => Role::class,
-                    'pivot'            => true, // on create&update, do you need to add/delete pivot table entries?]
-                    'number_columns'   => 3, //can be 1,2,3,4,6
-
+                    'pivot'            => true,
+                    'number_columns'   => 3,
                 ],
                 'secondary' => [
                     'label'          => 'Права доступа',
-                    'name'           => 'permissions', // the method that defines the relationship in your Model
-                    'entity'         => 'permissions', // the method that defines the relationship in your Model
-                    'entity_primary' => 'roles', // the method that defines the relationship in your Model
-                    'attribute'      => 'name', // foreign key attribute that is shown to user
+                    'name'           => 'permissions',
+                    'entity'         => 'permissions',
+                    'entity_primary' => 'roles',
+                    'attribute'      => 'name',
                     'model'          => Permission::class,
-                    'pivot'          => true, // on create&update, do you need to add/delete pivot table entries?]
-                    'number_columns' => 3, //can be 1,2,3,4,6
-
+                    'pivot'          => true,
+                    'number_columns' => 3,
                 ],
             ],
         ]);
-         */
-        /*
-        CRUD::addField([
-            'label'      => 'Права доступа',
-            'type'       => 'select_multiple',
-            'name'       => 'permissions',
-            'entity'     => 'permissions',
-            'model'      => Permission::class,
-            'attribute'  => 'concatGroupAndNameLabels',
-            'options'    => (function ($query) {
-                return $query
-                    ->orderBy('group', 'ASC')
-                    ->orderBy('name', 'ASC')
-                    ->get();
-            }),
+
+        //
+        foreach (AccessGroupFlagDictionary::getTitleCollection() as $key => $label) {
+            CRUD::field([
+                'label'    => $label,
+                'type'     => 'checkbox',
+                'name'     => $key,
+                'default'  => AccessGroupFlagDictionary::getDefaultValueById($key),
+                'fake'     => true,
+                'store_in' => 'flags',
+            ]);
+        }
+
+        CRUD::field([
+            'label'           => 'Компании',
+            'type'            => 'checklist',
+            'name'            => 'companies',
+            'entity'          => 'companies',
+            'attribute'       => 'title',
+            'model'           => Company::class,
+            'pivot'           => true,
+            'show_select_all' => true,
+            'number_columns'  => 2,
             'attributes' => [
-                'size' => 15,
-            ],
+                'class' => 'd-none',
+            ]
         ]);
-        */
     }
 
     /**

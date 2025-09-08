@@ -23,5 +23,21 @@ class AccessGroupFlagDictionary extends AbstractDictionary
      */
     protected static $titleCollection = [
         self::ACCESS_ONLY_AT_THE_USER_COMPANY_LEVEL => 'Доступ только на уровне компании пользователя',
+
     ];
+
+    /**
+     * @var bool[]
+     */
+    protected static $defaultValues = [
+        self::ACCESS_ONLY_AT_THE_USER_COMPANY_LEVEL => true,
+    ];
+
+    /**
+     * @return bool[]
+     */
+    public static function getDefaultValueById(string $id)
+    {
+        return self::$defaultValues[$id];
+    }
 }

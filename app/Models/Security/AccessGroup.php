@@ -2,6 +2,7 @@
 
 namespace App\Models\Security;
 
+use App\Dictionaries\Security\AccessGroupFlagDictionary;
 use App\Models\BaseModel;
 use App\Models\CompanyStructure\Company;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
@@ -16,6 +17,7 @@ use Backpack\CRUD\app\Models\Traits\CrudTrait;
  * @property Role[] $roles
  * @property Permission[] $permissions
  * @property Company[] $companies
+ * @see AccessGroupFlagDictionary
  */
 class AccessGroup extends BaseModel
 {
@@ -42,12 +44,16 @@ class AccessGroup extends BaseModel
         'flags' => 'array',
     ];
 
+    protected $fakeColumns = [
+        'flags',
+    ];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function roles()
     {
-        return $this->belongsToMany(Role::class, 'admin_access_group_roles', 'role_id', 'access_group_id');
+        return $this->belongsToMany(Role::class, 'admin_access_group_roles', 'access_group_id', 'role_id');
     }
 
     /**
@@ -55,7 +61,7 @@ class AccessGroup extends BaseModel
      */
     public function permissions()
     {
-        return $this->belongsToMany(Permission::class, 'admin_access_group_roles', 'permission_id', 'access_group_id');
+        return $this->belongsToMany(Permission::class, 'admin_access_group_permissions', 'access_group_id', 'permission_id');
     }
 
     /**
@@ -63,7 +69,7 @@ class AccessGroup extends BaseModel
      */
     public function companies()
     {
-        return $this->belongsToMany(Company::class, 'admin_access_group_roles', 'company_id', 'access_group_id');
+        return $this->belongsToMany(Company::class, 'admin_access_group_companies', 'access_group_id', 'company_id');
     }
 
     /**
