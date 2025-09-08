@@ -80,9 +80,9 @@ class AccessGroup extends BaseModel
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function accessGroup()
+    public function companies()
     {
-        return $this->belongsToMany(AccessGroup::class, 'user_access_groups', 'user_access_id', 'access_group_id');
+        return $this->belongsToMany(Company::class, 'admin_access_group_companies', 'access_group_id', 'company_id');
     }
 
     /**

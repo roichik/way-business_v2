@@ -43,7 +43,6 @@ class AccessGroupCrudController extends BaseCrudController
         CRUD::setRoute(config('backpack.base.route_prefix') . '/access-group');
         CRUD::setEntityNameStrings('Группа доступа', 'Группы доступа');
         Widget::add()->type('script')->content('/js/admin/access-group.js');
-
     }
 
     /**
@@ -84,27 +83,25 @@ class AccessGroupCrudController extends BaseCrudController
             ],
         ]);
 
-
         //Флаги
-
-            CRUD::column([
-                'label'    => 'Дополнительные параметры',
-                'type'     => 'closure',
-                'name'     => 'flags',
-                'function' => function (AccessGroup $entry) {
-                    $values = [];
-                    foreach ($entry->flags as $k => $b) {
-                        foreach (AccessGroupFlagDictionary::getTitleCollection() as $key => $label) {
-                            if ($key != $k || !$b) {
-                                continue;
-                            }
-                            $values[] = $label;
+        CRUD::column([
+            'label'    => 'Дополнительные параметры',
+            'type'     => 'closure',
+            'name'     => 'flags',
+            'function' => function (AccessGroup $entry) {
+                $values = [];
+                foreach ($entry->flags as $k => $b) {
+                    foreach (AccessGroupFlagDictionary::getTitleCollection() as $key => $label) {
+                        if ($key != $k || !$b) {
+                            continue;
                         }
+                        $values[] = $label;
                     }
-
-                    return implode(', ', $values);
                 }
-            ]);
+
+                return implode(', ', $values);
+            }
+        ]);
 
         //Компании
         CRUD::column([
