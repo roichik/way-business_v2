@@ -1,21 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin\Security;
 
-use App\Dictionaries\User\GenderDictionary;
-use App\Dictionaries\UserRoleDictionary;
-use App\Helpers\CryptoHelper;
-use App\Http\Requests\Admin\User\UserCreateRequest;
-use App\Http\Requests\UserRequest;
-use App\Models\Permission;
-use Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
-use Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
+use App\Http\Controllers\Admin\BaseCrudController;
 use Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
-use Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
-use Illuminate\Http\RedirectResponse;
-use Jenssegers\Agent\Agent;
 
 /**
  * Class PermissionCrudController
@@ -33,7 +23,7 @@ class PermissionCrudController extends BaseCrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\Permission::class);
+        CRUD::setModel(\App\Models\Security\Permission::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/permissions');
         CRUD::setEntityNameStrings('Право доступа', 'Права доступа');
     }

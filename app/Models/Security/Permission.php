@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Security;
 
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Carbon\Carbon;

@@ -3,7 +3,7 @@
 namespace App\Services\Security\Operations;
 
 use App\Dictionaries\Security\PermissionDictionary;
-use App\Models\Permission;
+use App\Models\Security\Permission;
 
 /**
  * Class PermissionOperation

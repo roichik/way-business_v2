@@ -1,23 +1,24 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin\CompanyStructure;
 
+use App\Http\Controllers\Admin\BaseCrudController;
 use App\Models\CompanyStructure\Company;
+use App\Models\CompanyStructure\Division;
 use Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
-use Backpack\CRUD\app\Http\Controllers\Operations\ReorderOperation;
 
 /**
- * Class CompanyStructureCrudController
+ * Class DivisionCrudController
  *
  * @package App\Http\Controllers\Admin
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class CompanyCrudController extends BaseCrudController
+class DivisionCrudController extends BaseCrudController
 {
     use ListOperation;
     use ShowOperation;
@@ -28,17 +29,15 @@ class CompanyCrudController extends BaseCrudController
         update as traitUpdate;
     }
     use DeleteOperation;
-    use ReorderOperation;
 
     /**
      * @return void
      */
     public function setup()
     {
-        CRUD::setModel(Company::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/companies');
-        CRUD::setEntityNameStrings('Компания', 'Компании');
-
+        CRUD::setModel(Division::class);
+        CRUD::setRoute(config('backpack.base.route_prefix') . '/divisions');
+        CRUD::setEntityNameStrings('Подразделение/отдел', 'Подразделения/отделы');
     }
 
     /**
@@ -46,18 +45,19 @@ class CompanyCrudController extends BaseCrudController
      */
     protected function setupListOperation()
     {
-        //change default order key
+        /*
         if (!$this->crud->getRequest()->has('order')) {
-            $this->crud->orderBy('lft', 'asc');
+            $this->crud->orderBy('lft', 'desc');
         }
+        */
 
         CRUD::column('id')->label('ID');
         CRUD::column('title')->type('text')->label('Название');
         CRUD::column([
-            'label'     => 'Управляющая компания',
+            'label'     => 'Компания',
             'type'      => 'select',
-            'name'      => 'parent_id',
-            'entity'    => 'parent',
+            'name'      => 'company_id',
+            'entity'    => 'company',
             'model'     => Company::class,
             'attribute' => 'title',
             'options'   => (function ($query) {
@@ -76,12 +76,13 @@ class CompanyCrudController extends BaseCrudController
         CRUD::column('id')->label('ID');
         CRUD::column('title')->type('text')->label('Название');
         CRUD::column([
-            'label'     => 'Управляющая компания',
+            'label'     => 'Компания',
             'type'      => 'select',
-            'name'      => 'parent_id',
-            'entity'    => 'parent',
+            'name'      => 'company_id',
+            'entity'    => 'company',
             'model'     => Company::class,
             'attribute' => 'title',
+            'pivot'     => true,
             'options'   => (function ($query) {
                 return $query->orderBy('title', 'ASC')->get();
             }),
@@ -97,21 +98,15 @@ class CompanyCrudController extends BaseCrudController
     {
         CRUD::field('title')->type('text')->label('Название');
         CRUD::field([
-            'label'         => 'Управляющая компания',
-            'type'          => 'select',
-            'name'          => 'parent_id',
-            'entity'        => 'parent',
-            'model'         => Company::class,
-            'attribute'     => 'title',
-            'options'       => (function ($query) {
-                $query
-                    ->orderBy('title', 'ASC');
-
-                if ($this->crud->getCurrentEntryId()) {
-                    $query->where('id', '!=', $this->crud->getCurrentEntryId());
-                }
-
-                return $query->get();
+            'label'     => 'Компания',
+            'type'      => 'select',
+            'name'      => 'company_id',
+            'entity'    => 'company',
+            'model'     => Company::class,
+            'attribute' => 'title',
+            'pivot'     => true,
+            'options'   => (function ($query) {
+                return $query->orderBy('title', 'ASC')->get();
             }),
         ]);
     }
@@ -122,14 +117,5 @@ class CompanyCrudController extends BaseCrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
-    }
-
-    /**
-     * @return void
-     */
-    protected function setupReorderOperation()
-    {
-        CRUD::set('reorder.label', 'title');
-        CRUD::set('reorder.max_level', 3);
     }
 }

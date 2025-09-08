@@ -14,20 +14,7 @@
     <ul class="nav-dropdown-items">
         <x-backpack::menu-item title="Права доступа" icon="la la-question" :link="backpack_url('permissions')"/>
         <x-backpack::menu-item title="Роли" icon="la la-question" :link="backpack_url('roles')"/>
+        <x-backpack::menu-item title="Группы доступа" icon="la la-question" :link="backpack_url('access-group')"/>
     </ul>
 </li>
 <x-backpack::menu-item title="Пользователи" icon="la la-question" :link="backpack_url('users')"/>
-
-<label for="mySelect">Choose options:</label>
-<select id="mySelect" name="mySelection" multiple>
-    <optgroup label="Group A">
-        <option value="optionA1">Option A1</option>
-        <option value="optionA2">Option A2</option>
-    </optgroup>
-    <optgroup label="Group B">
-        <option value="optionB1">Option B1</option>
-        <option value="optionB2">Option B2</option>
-        <option value="optionB3">Option B3</option>
-    </optgroup>
-    <option value="standaloneOption">Standalone Option</option>
-</select>

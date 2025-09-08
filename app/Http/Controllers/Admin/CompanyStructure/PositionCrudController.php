@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin\CompanyStructure;
 
+use App\Http\Controllers\Admin\BaseCrudController;
 use App\Models\CompanyStructure\Division;
 use App\Models\CompanyStructure\Position;
 use Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;

@@ -10,7 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table('permissions', function (Blueprint $talbe) {
+        Schema::table('admin_permissions', function (Blueprint $talbe) {
             $talbe->string('group')->nullable()->after('name');
         });
     }
@@ -20,7 +20,7 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table('permissions', function (Blueprint $talbe) {
+        Schema::table('admin_permissions', function (Blueprint $talbe) {
             $talbe->dropColumn('group');
         });
     }
