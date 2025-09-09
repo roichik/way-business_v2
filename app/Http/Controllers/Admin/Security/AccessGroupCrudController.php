@@ -127,6 +127,35 @@ class AccessGroupCrudController extends BaseCrudController
         CRUD::column('id')->label('ID');
         CRUD::column('title')->type('text')->label('Название');
 
+        CRUD::column([
+            'label'             => 'Роли и права доступа',
+            'field_unique_name' => 'role_permission',
+            'type'              => 'checklist_dependency',
+            'name'              => 'roles,permissions',
+            'subfields'         => [
+                'primary'   => [
+                    'label'            => 'Роли',
+                    'name'             => 'roles',
+                    'entity'           => 'roles',
+                    'entity_secondary' => 'permissions',
+                    'attribute'        => 'name',
+                    'model'            => Role::class,
+                    'pivot'            => true,
+                    'number_columns'   => 3,
+                ],
+                'secondary' => [
+                    'label'          => 'Права доступа',
+                    'name'           => 'permissions',
+                    'entity'         => 'permissions',
+                    'entity_primary' => 'roles',
+                    'attribute'      => 'name',
+                    'model'          => Permission::class,
+                    'pivot'          => true,
+                    'number_columns' => 3,
+                ],
+            ],
+        ]);
+
         //Флаги
         $flags = AccessGroup::find($this->crud->getCurrentEntryId())->flags;
         foreach (AccessGroupFlagDictionary::getTitleCollection() as $key => $label) {
@@ -139,6 +168,18 @@ class AccessGroupCrudController extends BaseCrudController
                 'store_in' => 'flags',
             ]);
         }
+
+        //Компании
+        CRUD::column([
+            'label'           => 'Компании',
+            'type'            => 'checklist',
+            'name'            => 'companies',
+            'entity'          => 'companies',
+            'attribute'       => 'title',
+            'model'           => Company::class,
+            'pivot'           => true,
+            'show_select_all' => true,
+        ]);
 
         CRUD::column('created_at')->label('Дата создания');
         CRUD::column('updated_at')->label('Дата редактирование');
