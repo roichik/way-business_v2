@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin\CompanyStructure;
 
 use App\Http\Controllers\Admin\BaseCrudController;
+use App\Http\Requests\Admin\Security\DivisionCreateRequest;
+use App\Http\Requests\Admin\Security\DivisionUpdateRequest;
 use App\Models\CompanyStructure\Company;
 use App\Models\CompanyStructure\Division;
 use Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
@@ -97,6 +99,7 @@ class DivisionCrudController extends BaseCrudController
      */
     protected function setupCreateOperation()
     {
+        CRUD::setValidation(DivisionCreateRequest::class);
         CRUD::field('title')->type('text')->label('Название');
         CRUD::field([
             'label'     => 'Компания',
@@ -118,5 +121,6 @@ class DivisionCrudController extends BaseCrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
+        CRUD::setValidation(DivisionUpdateRequest::class);
     }
 }

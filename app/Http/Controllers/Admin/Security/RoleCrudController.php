@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin\Security;
 
 use App\Http\Controllers\Admin\BaseCrudController;
-use App\Http\Requests\Admin\User\RoleCreateRequest;
+use App\Http\Requests\Admin\Security\RoleCreateRequest;
+use App\Http\Requests\Admin\Security\RoleUpdateRequest;
 use App\Models\Security\Permission;
-use App\Models\Security\Role;
 use Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
@@ -117,5 +117,6 @@ class RoleCrudController extends BaseCrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
+        CRUD::setValidation(RoleUpdateRequest::class);
     }
 }

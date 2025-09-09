@@ -20,6 +20,7 @@ use Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Backpack\CRUD\app\Library\Widget;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class UserCrudController
@@ -380,14 +381,21 @@ class UserCrudController extends BaseCrudController
      */
     public function store()
     {
-        $password = $this->crud->getRequest()->request->get('password');
-        if ($password === null || $password === '') {
-            $this->crud->getRequest()->request->remove('password');
-        }
+        DB::beginTransaction();
+        try {
+            $password = $this->crud->getRequest()->request->get('password');
+            if ($password === null || $password === '') {
+                $this->crud->getRequest()->request->remove('password');
+            }
 
-        $response = $this->traitStore();
-        $this->updateUserAccessFlags();
-        $this->updateUserCompanyStructure();
+            $response = $this->traitStore();
+            $this->updateUserAccessFlags();
+            $this->updateUserCompanyStructure();
+        } catch (\Throwable $exception) {
+            DB::rollback();
+            throw $exception;
+        }
+        DB::commit();
 
         return $response;
     }
@@ -397,14 +405,21 @@ class UserCrudController extends BaseCrudController
      */
     public function update()
     {
-        $password = $this->crud->getRequest()->request->get('password');
-        if ($password === null || $password === '') {
-            $this->crud->getRequest()->request->remove('password');
-        }
+        DB::beginTransaction();
+        try {
+            $password = $this->crud->getRequest()->request->get('password');
+            if ($password === null || $password === '') {
+                $this->crud->getRequest()->request->remove('password');
+            }
 
-        $response = $this->traitUpdate();
-        $this->updateUserAccessFlags();
-        $this->updateUserCompanyStructure();
+            $response = $this->traitUpdate();
+            $this->updateUserAccessFlags();
+            $this->updateUserCompanyStructure();
+        } catch (\Throwable $exception) {
+            DB::rollback();
+            throw $exception;
+        }
+        DB::commit();
 
         return $response;
     }
