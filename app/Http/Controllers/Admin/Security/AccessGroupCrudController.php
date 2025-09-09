@@ -163,7 +163,7 @@ class AccessGroupCrudController extends BaseCrudController
                 'label'    => $label,
                 'type'     => 'checkbox',
                 'name'     => $key,
-                'default'  => array_key_exists($key, $flags) && (bool)$flags[$key],
+                'value'    => array_key_exists($key, $flags) && (bool)$flags[$key],
                 'fake'     => true,
                 'store_in' => 'flags',
             ]);

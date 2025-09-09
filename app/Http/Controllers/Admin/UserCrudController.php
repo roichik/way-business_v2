@@ -63,8 +63,9 @@ class UserCrudController extends BaseCrudController
         CRUD::column('userDetail.last_name')->type('text')->label('Фамилия');
         CRUD::column('userDetail.first_name')->type('text')->label('Имя');
         CRUD::column('userDetail.father_name')->type('text')->label('Отчество');
-        CRUD::column('is_enabled')->type('boolean')->label('Enabled');
+        CRUD::column('is_enabled')->type('boolean')->label('Активный');
         CRUD::column('created_at')->label('Дата создания');
+        CRUD::column('updated_at')->label('Дата обновления');
     }
 
     /**
@@ -72,7 +73,6 @@ class UserCrudController extends BaseCrudController
      */
     protected function setupShowOperation()
     {
-        $this->crud->set('show.setFromDb', false);
         CRUD::column('id')->label('ID');
         CRUD::column('nickname')->type('text')->label('Пользователь');
         CRUD::column('email')->type('text')->label('Email');
@@ -86,10 +86,113 @@ class UserCrudController extends BaseCrudController
             ->type('select_from_array')
             ->label('Пол')
             ->options(GenderDictionary::getTitleCollection());
-        CRUD::column('is_enabled')->type('boolean')->label('Активный');
+
         CRUD::column('userDetail.birthday_at')->type('date')->label('День рождения');
-        CRUD::column('created_at')->label('Дата создания');
-        CRUD::column('updated_at')->label('Дата обновления');
+
+        CRUD::column([
+            'label'         => 'Компания',
+            'type'          => 'select',
+            'name'          => 'userDetail.company_id',
+            'entity'        => 'userDetail.company',
+            'model'         => Company::class,
+            'attribute'     => 'title',
+            'options'       => (function ($query) {
+                return $query->orderBy('title', 'ASC')->get();
+            }),
+            'relation_type' => 'BelongsTo',
+        ]);
+        CRUD::column([
+            'label'         => 'Подразделение/отдел',
+            'type'          => 'select',
+            'name'          => 'userDetail.division_id',
+            'entity'        => 'userDetail.division',
+            'model'         => Division::class,
+            'attribute'     => 'title',
+            'options'       => (function ($query) {
+                return $query->orderBy('title', 'ASC')->get();
+            }),
+            'relation_type' => 'BelongsTo',
+        ]);
+        CRUD::column([
+            'label'         => 'Должность',
+            'type'          => 'select',
+            'name'          => 'userDetail.position_id',
+            'entity'        => 'userDetail.position',
+            'model'         => Position::class,
+            'attribute'     => 'title',
+            'options'       => (function ($query) {
+                return $query->orderBy('title', 'ASC')->get();
+            }),
+            'relation_type' => 'BelongsTo',
+        ]);
+
+        CRUD::column([
+            'label'             => 'Группы доступа',
+            'field_unique_name' => 'access_groups',
+            'type'              => 'checklist',
+            'name'              => 'accessGroups',
+            'tab'               => 'Права доступа',
+        ]);
+
+        CRUD::column([
+            'label'             => 'Роли и права доступа',
+            'field_unique_name' => 'role_permission',
+            'type'              => 'checklist_dependency',
+            'name'              => 'accessRoles,accessPermissions',
+            'tab'               => 'Права доступа',
+            'subfields'         => [
+                'primary'   => [
+                    'label'            => 'Роли',
+                    'name'             => 'accessRoles',
+                    'entity'           => 'accessRoles',
+                    'entity_secondary' => 'permissions',
+                    'attribute'        => 'name',
+                    'model'            => Role::class,
+                    'pivot'            => true,
+                    'number_columns'   => 3,
+                ],
+                'secondary' => [
+                    'label'          => 'Права доступа',
+                    'name'           => 'accessPermissions',
+                    'entity'         => 'permissions',
+                    'entity_primary' => 'roles',
+                    'attribute'      => 'name',
+                    'model'          => Permission::class,
+                    'pivot'          => true,
+                    'number_columns' => 3,
+                ],
+            ],
+        ]);
+
+        //Флаги
+        $flags = User::find($this->crud->getCurrentEntryId())->userAccess->flags;
+        foreach (AccessGroupFlagDictionary::getTitleCollection() as $id => $label) {
+            CRUD::column([
+                'label'    => $label,
+                'type'     => 'checkbox',
+                'name'     => $id,
+                'value'    => array_key_exists($id, $flags) && (bool)$flags[$id],
+                'fake'     => true,
+                'store_in' => 'flags',
+            ]);
+        }
+
+        //Компании
+        CRUD::column([
+            'label'           => 'Компании',
+            'type'            => 'checklist',
+            'name'            => 'accessCompanies',
+            'entity'          => 'accessCompanies',
+            'attribute'       => 'title',
+            'model'           => Company::class,
+            'pivot'           => true,
+            'show_select_all' => true,
+            'number_columns'  => 2,
+            'tab'             => 'Права доступа',
+        ]);
+        CRUD::column('is_enabled')->type('boolean')->label('Активный')->tab('Общие сведенья');
+        CRUD::column('created_at')->label('Дата создания')->tab('Общие сведенья');
+        CRUD::column('updated_at')->label('Дата обновления')->tab('Общие сведенья');
     }
 
     /**
@@ -157,7 +260,7 @@ class UserCrudController extends BaseCrudController
             'label'         => 'Компания',
             'type'          => 'select',
             'name'          => 'userDetail.company_id',
-            'entity'        => 'userDetail.company_id',
+            'entity'        => 'userDetail.company',
             'model'         => Company::class,
             'attribute'     => 'title',
             'options'       => (function ($query) {
@@ -170,7 +273,7 @@ class UserCrudController extends BaseCrudController
             'label'         => 'Подразделение/отдел',
             'type'          => 'select',
             'name'          => 'userDetail.division_id',
-            'entity'        => 'userDetail.division_id',
+            'entity'        => 'userDetail.division',
             'model'         => Division::class,
             'attribute'     => 'title',
             'options'       => (function ($query) {
@@ -183,7 +286,7 @@ class UserCrudController extends BaseCrudController
             'label'         => 'Должность',
             'type'          => 'select',
             'name'          => 'userDetail.position_id',
-            'entity'        => 'userDetail.position_id',
+            'entity'        => 'userDetail.position',
             'model'         => Position::class,
             'attribute'     => 'title',
             'options'       => (function ($query) {
