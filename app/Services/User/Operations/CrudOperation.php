@@ -28,7 +28,7 @@ class CrudOperation extends AbstractOperation
                 ->save();
 
             $user
-                ->userDetail()
+                ->detail()
                 ->create(
                     $userDto->detail->toAttributes()
                 );
@@ -56,7 +56,7 @@ class CrudOperation extends AbstractOperation
                 ->save();
 
             $user
-                ->userDetail
+                ->detail
                 ->fill($userDto->detail->toAttributes())
                 ->save();
         } catch (\Throwable $exception) {

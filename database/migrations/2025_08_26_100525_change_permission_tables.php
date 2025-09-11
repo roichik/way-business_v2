@@ -10,10 +10,10 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table('admin_permissions', function (Blueprint $table) {
+        Schema::table('access_permissions', function (Blueprint $table) {
             $table->string('description', 1000)->nullable()->after('guard_name');
         });
-        Schema::table('admin_roles', function (Blueprint $table) {
+        Schema::table('access_roles', function (Blueprint $table) {
             $table->string('description', 1000)->nullable()->after('guard_name');
         });
     }
@@ -23,7 +23,7 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropColumns('admin_permissions', 'description');
-        Schema::dropColumns('admin_roles', 'description');
+        Schema::dropColumns('access_permissions', 'description');
+        Schema::dropColumns('access_roles', 'description');
     }
 };

@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasPermissions;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -30,13 +31,13 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property UserDetail $userDetail
- * @property UserAccess $userAccess
- * @property AccessGroup[] $accessGroups
- * @property Role[] $accessRoles
- * @property Permission[] $accessPermissions
- * @property Company[] $accessCompanies
  * @property Role[] $roles
  * @property Permission[] $permissions
+ * @property UserAccess $userAccess
+ * @property AccessGroup[] $userAccessGroups
+ * @property Role[] $userAccessRoles
+ * @property Permission[] $userAccessPermissions
+ * @property Company[] $userAccessCompanies
  */
 class User extends Authenticatable
 {
@@ -81,7 +82,7 @@ class User extends Authenticatable
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function userDetail()
+    public function detail()
     {
         return $this->hasOne(UserDetail::class, 'user_id');
     }
@@ -97,7 +98,7 @@ class User extends Authenticatable
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function accessGroups()
+    public function userAccessGroups()
     {
         return $this->belongsToMany(AccessGroup::class, 'user_access_groups', 'user_id', 'access_group_id');
     }
@@ -105,7 +106,7 @@ class User extends Authenticatable
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function accessRoles()
+    public function userAccessRoles()
     {
         return $this->belongsToMany(Role::class, 'user_access_roles', 'user_id', 'role_id');
     }
@@ -113,7 +114,7 @@ class User extends Authenticatable
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function accessPermissions()
+    public function userAccessPermissions()
     {
         return $this->belongsToMany(Permission::class, 'user_access_permissions', 'user_id', 'permission_id');
     }
@@ -121,7 +122,7 @@ class User extends Authenticatable
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function accessCompanies()
+    public function userAccessCompanies()
     {
         return $this->belongsToMany(Company::class, 'user_access_companies', 'user_id', 'company_id');
     }

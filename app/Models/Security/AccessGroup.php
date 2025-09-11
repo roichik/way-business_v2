@@ -18,6 +18,9 @@ use Carbon\Carbon;
  * @property array|null $flags
  * @property Carbon $created_at
  * @property Carbon $updated_at
+ * @property Role[] $roles
+ * @property Permission[] $permissions
+ * @property Company[] $companies
  * @see AccessGroupFlagDictionary
  */
 class AccessGroup extends BaseModel

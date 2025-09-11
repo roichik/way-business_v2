@@ -17,19 +17,19 @@ class UserUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'password'               => ['nullable', 'min:6', 'max:40', 'string'],
-            'email_verified_at'      => ['nullable', 'date'],
-            'phone'                  => ['nullable', 'string', 'max:50'],
-            'phone_verified_at'      => ['nullable', 'date'],
-            'is_enabled'             => ['boolean'],
-            'userDetail.first_name'  => ['required', 'string', 'max:50',],
-            'userDetail.last_name'   => ['required', 'string', 'max:50',],
-            'userDetail.father_name' => ['nullable', 'string', 'max:50',],
-            'userDetail.gender'      => ['required', 'string', Rule::in(GenderDictionary::getCollection())],
-            'userDetail.birthday_at' => ['date'],
-            'userDetail.company_id'  => ['nullable', 'exists:companies,id'],
-            'userDetail.division_id' => ['nullable', 'exists:divisions,id'],
-            'userDetail.position_id' => ['nullable', 'exists:positions,id'],
+            'password'           => ['nullable', 'min:6', 'max:40', 'string'],
+            'email_verified_at'  => ['nullable', 'date'],
+            'phone'              => ['nullable', 'string', 'max:50'],
+            'phone_verified_at'  => ['nullable', 'date'],
+            'is_enabled'         => ['boolean'],
+            'detail.first_name'  => ['required', 'string', 'max:50',],
+            'detail.last_name'   => ['required', 'string', 'max:50',],
+            'detail.father_name' => ['nullable', 'string', 'max:50',],
+            'detail.gender'      => ['required', 'string', Rule::in(GenderDictionary::getCollection())],
+            'detail.birthday_at' => ['date'],
+            'detail.company_id'  => ['nullable', 'exists:companies,id'],
+            'detail.division_id' => ['nullable', 'exists:divisions,id'],
+            'detail.position_id' => ['nullable', 'exists:positions,id'],
         ];
     }
 
@@ -39,19 +39,19 @@ class UserUpdateRequest extends FormRequest
     public function attributes()
     {
         return [
-            'password'               => 'Пароль',
-            'email_verified_at'      => 'Подтверджение пароля',
-            'phone'                  => 'Телефон',
-            'phone_verified_at'      => 'Подтверджение телефона',
-            'is_enabled'             => 'Активный',
-            'userDetail.first_name'  => 'Имя',
-            'userDetail.last_name'   => 'Фамилия',
-            'userDetail.father_name' => 'Отчество',
-            'userDetail.gender'      => 'Пол',
-            'userDetail.birthday_at' => 'Дата роджения',
-            'userDetail.company_id'  => 'Компания',
-            'userDetail.division_id' => 'Подразделение/отдел',
-            'userDetail.position_id' => 'Должность',
+            'password'           => 'Пароль',
+            'email_verified_at'  => 'Подтверджение пароля',
+            'phone'              => 'Телефон',
+            'phone_verified_at'  => 'Подтверджение телефона',
+            'is_enabled'         => 'Активный',
+            'detail.first_name'  => 'Имя',
+            'detail.last_name'   => 'Фамилия',
+            'detail.father_name' => 'Отчество',
+            'detail.gender'      => 'Пол',
+            'detail.birthday_at' => 'Дата роджения',
+            'detail.company_id'  => 'Компания',
+            'detail.division_id' => 'Подразделение/отдел',
+            'detail.position_id' => 'Должность',
         ];
     }
 }

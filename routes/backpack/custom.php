@@ -39,12 +39,4 @@ Route::group([
     Route::crud('/companies', CompanyCrudController::class);
     Route::crud('/divisions', DivisionCrudController::class);
     Route::crud('/positions', PositionCrudController::class);
-
-    //Route::crud('company-structure/types', CompanyStructureTypeCrudController::class);
-    /*
-    foreach(\App\Models\CompanyStructureType::get() as $companyStructure){
-        Route::crud('company-structure/' . $companyStructure->slug, CompanyStructureCrudController::class);
-    }
-    */
-
 });

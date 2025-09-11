@@ -28,13 +28,13 @@ class ProfileDetailResponse extends JsonResource
             'created_at'        => $this->created_at->toDateTimeString(),
             'updated_at'        => $this->updated_at->toDateTimeString(),
             'detail'            => [
-                'first_name'  => $this->userDetail->first_name,
-                'last_name'   => $this->userDetail->last_name,
-                'father_name' => $this->userDetail->father_name,
-                'gender'      => $this->userDetail->gender,
-                'birthday_at' => $this->userDetail->birthday_at->toDateString(),
-                'created_at'  => $this->userDetail->created_at->toDateTimeString(),
-                'updated_at'  => $this->userDetail->updated_at->toDateTimeString(),
+                'first_name'  => $this->detail->first_name,
+                'last_name'   => $this->detail->last_name,
+                'father_name' => $this->detail->father_name,
+                'gender'      => $this->detail->gender,
+                'birthday_at' => $this->detail->birthday_at->toDateString(),
+                'created_at'  => $this->detail->created_at->toDateTimeString(),
+                'updated_at'  => $this->detail->updated_at->toDateTimeString(),
             ],
         ];
     }
