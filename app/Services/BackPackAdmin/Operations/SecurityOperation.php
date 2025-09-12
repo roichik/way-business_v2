@@ -18,6 +18,5 @@ class SecurityOperation
     {
         (new SyncAllPermissionsHandler($user))
             ->handle();
-
     }
 }

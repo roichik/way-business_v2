@@ -2,6 +2,7 @@
 
 namespace App\Services\Security\Operations;
 
+use App\Services\Security\Handlers\ConsolidatedSecurityStructureByUserHandler;
 use Spatie\Permission\PermissionRegistrar;
 
 /**
@@ -10,6 +11,17 @@ use Spatie\Permission\PermissionRegistrar;
  */
 class GeneralOperation extends AbstractOperation
 {
+
+    /**
+     * Консолидированная структура прав, ролей и других обьектов доступа у пользователя
+     *
+     * @param $user
+     * @return SecurityStructureByUserHandler
+     */
+    public function consolidatedSecurityStructureByUser($user)
+    {
+        return (new ConsolidatedSecurityStructureByUserHandler($user));
+    }
 
     /**
      * Сброс кэша
