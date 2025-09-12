@@ -3,7 +3,7 @@
 namespace App\Models\CompanyStructure;
 
 use App\Models\BaseModel;
-use App\Models\User\UserAccess;
+use App\Models\User\User;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Carbon\Carbon;
 
@@ -20,7 +20,7 @@ use Carbon\Carbon;
  * @property Carbon $updated_at
  * @property Company $parent
  * @property Division[] $divisions
- * @property UserAccess $userAccess
+ * @property User[] $users
  */
 class Company extends BaseModel
 {
@@ -58,8 +58,8 @@ class Company extends BaseModel
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function userAccess()
+    public function users()
     {
-        return $this->belongsToMany(UserAccess::class, 'user_access_group_companies', 'company_id', 'user_access_id');
+        return $this->belongsToMany(User::class, 'user_admin_access_companies', 'company_id', 'user_id');
     }
 }

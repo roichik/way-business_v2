@@ -4,7 +4,6 @@ namespace App\Models\User;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\CompanyStructure\Company;
-use App\Models\Security\AccessGroup;
 use App\Models\Security\Permission;
 use App\Models\Security\Role;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
@@ -13,7 +12,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasPermissions;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -31,13 +29,16 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property UserDetail $userDetail
+ * Roles and permission
  * @property Role[] $roles
  * @property Permission[] $permissions
- * @property UserAccess $userAccess
- * @property AccessGroup[] $userAccessGroups
- * @property Role[] $userAccessRoles
- * @property Permission[] $userAccessPermissions
- * @property Company[] $userAccessCompanies
+ * Admin access..
+ * @property UserAdminAccess $adminAccess
+ * @property UserAdminAccessGroup[] $adminAccessGroups
+ * @property Role[] $adminAccessRoles
+ * @property Permission[] $adminAccessPermissions
+ * @property Company[] $adminAccessCompanies
+ * Security
  */
 class User extends Authenticatable
 {
@@ -90,41 +91,40 @@ class User extends Authenticatable
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function userAccess()
+    public function adminAccess()
     {
-        return $this->hasOne(UserAccess::class, 'user_id');
+        return $this->hasOne(UserAdminAccess::class, 'user_id');
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function userAccessGroups()
+    public function adminAccessGroups()
     {
-        return $this->belongsToMany(AccessGroup::class, 'user_access_groups', 'user_id', 'access_group_id');
+        return $this->belongsToMany(UserAdminAccessGroup::class, 'user_admin_access_groups', 'user_id', 'access_group_id');
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function userAccessRoles()
+    public function adminAccessRoles()
     {
-        return $this->belongsToMany(Role::class, 'user_access_roles', 'user_id', 'role_id');
+        return $this->belongsToMany(Role::class, 'user_admin_access_roles', 'user_id', 'role_id');
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function userAccessPermissions()
+    public function adminAccessPermissions()
     {
-        return $this->belongsToMany(Permission::class, 'user_access_permissions', 'user_id', 'permission_id');
+        return $this->belongsToMany(Permission::class, 'user_admin_access_permissions', 'user_id', 'permission_id');
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function userAccessCompanies()
+    public function adminAccessCompanies()
     {
-        return $this->belongsToMany(Company::class, 'user_access_companies', 'user_id', 'company_id');
+        return $this->belongsToMany(Company::class, 'user_admin_access_companies', 'user_id', 'company_id');
     }
-
 }

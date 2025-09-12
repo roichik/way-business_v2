@@ -132,7 +132,7 @@ class UserCrudController extends BaseCrudController
             'label'             => 'Группы доступа',
             'field_unique_name' => 'access_groups',
             'type'              => 'checklist',
-            'name'              => 'accessGroups',
+            'name'              => 'adminAccessGroups',
             'tab'               => 'Права доступа',
         ]);
 
@@ -140,13 +140,13 @@ class UserCrudController extends BaseCrudController
             'label'             => 'Роли и права доступа',
             'field_unique_name' => 'role_permission',
             'type'              => 'checklist_dependency',
-            'name'              => 'accessRoles,accessPermissions',
+            'name'              => 'adminAccessRoles,adminAccessPermissions',
             'tab'               => 'Права доступа',
             'subfields'         => [
                 'primary'   => [
                     'label'            => 'Роли',
-                    'name'             => 'accessRoles',
-                    'entity'           => 'accessRoles',
+                    'name'             => 'adminAccessRoles',
+                    'entity'           => 'adminAccessRoles',
                     'entity_secondary' => 'permissions',
                     'attribute'        => 'name',
                     'model'            => Role::class,
@@ -155,7 +155,7 @@ class UserCrudController extends BaseCrudController
                 ],
                 'secondary' => [
                     'label'          => 'Права доступа',
-                    'name'           => 'accessPermissions',
+                    'name'           => 'adminAccessPermissions',
                     'entity'         => 'permissions',
                     'entity_primary' => 'roles',
                     'attribute'      => 'name',
@@ -167,7 +167,7 @@ class UserCrudController extends BaseCrudController
         ]);
 
         //Флаги
-        $flags = User::find($this->crud->getCurrentEntryId())->userAccess->flags;
+        $flags = User::find($this->crud->getCurrentEntryId())->adminAccess->flags;
         foreach (AccessGroupFlagDictionary::getTitleCollection() as $id => $label) {
             CRUD::column([
                 'label'    => $label,
@@ -183,8 +183,8 @@ class UserCrudController extends BaseCrudController
         CRUD::column([
             'label'           => 'Компании',
             'type'            => 'checklist',
-            'name'            => 'accessCompanies',
-            'entity'          => 'accessCompanies',
+            'name'            => 'adminAccessCompanies',
+            'entity'          => 'adminAccessCompanies',
             'attribute'       => 'title',
             'model'           => Company::class,
             'pivot'           => true,
@@ -308,7 +308,7 @@ class UserCrudController extends BaseCrudController
             'label'             => 'Группы доступа',
             'field_unique_name' => 'access_groups',
             'type'              => 'checklist',
-            'name'              => 'accessGroups',
+            'name'              => 'adminAccessGroups',
             'tab'               => 'Права доступа',
         ]);
 
@@ -316,12 +316,12 @@ class UserCrudController extends BaseCrudController
             'label'             => 'Роли и права доступа',
             'field_unique_name' => 'role_permission',
             'type'              => 'checklist_dependency',
-            'name'              => 'accessRoles,accessPermissions',
+            'name'              => 'adminAccessRoles,adminAccessPermissions',
             'tab'               => 'Права доступа',
             'subfields'         => [
                 'primary'   => [
                     'label'            => 'Роли',
-                    'name'             => 'accessRoles',
+                    'name'             => 'adminAccessRoles',
                     'entity'           => 'roles',
                     'entity_secondary' => 'permissions',
                     'attribute'        => 'name',
@@ -331,7 +331,7 @@ class UserCrudController extends BaseCrudController
                 ],
                 'secondary' => [
                     'label'          => 'Права доступа',
-                    'name'           => 'accessPermissions',
+                    'name'           => 'adminAccessPermissions',
                     'entity'         => 'permissions',
                     'entity_primary' => 'roles',
                     'attribute'      => 'name',
@@ -346,7 +346,7 @@ class UserCrudController extends BaseCrudController
         foreach (AccessGroupFlagDictionary::getTitleCollection() as $id => $label) {
             $flagValue = AccessGroupFlagDictionary::getDefaultValueById($id);
             if ($this->crud->getCurrentEntryId()) {
-                $flagValue = User::find($this->crud->getCurrentEntryId())->userAccess->flagById(
+                $flagValue = User::find($this->crud->getCurrentEntryId())->adminAccess->flagById(
                     $id,
                     AccessGroupFlagDictionary::getDefaultValueById($id)
                 );
@@ -357,7 +357,7 @@ class UserCrudController extends BaseCrudController
                 'name'     => $id,
                 'default'  => $flagValue,
                 'fake'     => true,
-                'store_in' => 'userAccess.flags',
+                'store_in' => 'adminAccess.flags',
                 'tab'      => 'Права доступа',
             ]);
         }
@@ -366,8 +366,8 @@ class UserCrudController extends BaseCrudController
         CRUD::field([
             'label'           => 'Компании',
             'type'            => 'checklist',
-            'name'            => 'accessCompanies',
-            'entity'          => 'accessCompanies',
+            'name'            => 'adminAccessCompanies',
+            'entity'          => 'adminAccessCompanies',
             'attribute'       => 'title',
             'model'           => Company::class,
             'pivot'           => true,
@@ -390,7 +390,7 @@ class UserCrudController extends BaseCrudController
             }
 
             $response = $this->traitStore();
-            $this->updateUserAccessFlags();
+            $this->updateUserAdminAccessFlags();
             $this->updateUserCompanyStructure();
         } catch (\Throwable $exception) {
             DB::rollback();
@@ -423,7 +423,7 @@ class UserCrudController extends BaseCrudController
             }
 
             $response = $this->traitUpdate();
-            $this->updateUserAccessFlags();
+            $this->updateUserAdminAccessFlags();
             $this->updateUserCompanyStructure();
         } catch (\Throwable $exception) {
             DB::rollback();
@@ -461,7 +461,7 @@ class UserCrudController extends BaseCrudController
     /**
      * @return void
      */
-    private function updateUserAccessFlags()
+    private function updateUserAdminAccessFlags()
     {
         $all = $this->crud->getRequest()->request->all();
         $flags = [];
@@ -475,12 +475,12 @@ class UserCrudController extends BaseCrudController
 
         /** @var User $user */
         $user = User::find($this->crud->getCurrentEntryId());
-        if (!$user->userAccess) {
-            $user->userAccess()->create();
+        if (!$user->adminAccess) {
+            $user->adminAccess()->create();
             $user->refresh();
         }
 
-        $user->userAccess->flags = $flags;
-        $user->userAccess->save();
+        $user->adminAccess->flags = $flags;
+        $user->adminAccess->save();
     }
 }

@@ -4,15 +4,11 @@ namespace App\Models\User;
 
 use App\Dictionaries\Security\AccessGroupFlagDictionary;
 use App\Models\BaseModel;
-use App\Models\CompanyStructure\Company;
-use App\Models\Security\AccessGroup;
-use App\Models\Security\Permission;
-use App\Models\Security\Role;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Carbon\Carbon;
 
 /**
- * Class UserAccess
+ * Class UserAdminAccess
  *
  * @property int $id
  * @property int $user_id
@@ -22,14 +18,14 @@ use Carbon\Carbon;
  * @property Carbon $updated_at
  * @see AccessGroupFlagDictionary
  */
-class UserAccess extends BaseModel
+class UserAdminAccess extends BaseModel
 {
     use CrudTrait;
 
     /**
      * @var string
      */
-    protected $table = 'user_access';
+    protected $table = 'user_admin_access';
 
     /**
      * @var string[]

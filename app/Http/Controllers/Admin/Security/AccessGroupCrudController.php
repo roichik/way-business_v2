@@ -7,9 +7,9 @@ use App\Http\Controllers\Admin\BaseCrudController;
 use App\Http\Requests\Admin\Security\AccessGroupCreateRequest;
 use App\Http\Requests\Admin\Security\AccessGroupUpdateRequest;
 use App\Models\CompanyStructure\Company;
-use App\Models\Security\AccessGroup;
 use App\Models\Security\Permission;
 use App\Models\Security\Role;
+use App\Models\User\UserAdminAccessGroup;
 use Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
@@ -41,7 +41,7 @@ class AccessGroupCrudController extends BaseCrudController
      */
     public function setup()
     {
-        CRUD::setModel(AccessGroup::class);
+        CRUD::setModel(UserAdminAccessGroup::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/access-group');
         CRUD::setEntityNameStrings('Группа доступа', 'Группы доступа');
         Widget::add()->type('script')->content('/js/admin/access-group.js');
@@ -90,7 +90,7 @@ class AccessGroupCrudController extends BaseCrudController
             'label'    => 'Дополнительные параметры',
             'type'     => 'closure',
             'name'     => 'flags',
-            'function' => function (AccessGroup $entry) {
+            'function' => function (UserAdminAccessGroup $entry) {
                 $values = [];
                 foreach ($entry->flags as $k => $b) {
                     foreach (AccessGroupFlagDictionary::getTitleCollection() as $key => $label) {
@@ -159,7 +159,7 @@ class AccessGroupCrudController extends BaseCrudController
         ]);
 
         //Флаги
-        $flags = AccessGroup::find($this->crud->getCurrentEntryId())->flags;
+        $flags = UserAdminAccessGroup::find($this->crud->getCurrentEntryId())->flags;
         foreach (AccessGroupFlagDictionary::getTitleCollection() as $key => $label) {
             CRUD::column([
                 'label'    => $label,

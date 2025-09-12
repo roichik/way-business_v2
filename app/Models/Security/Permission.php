@@ -3,7 +3,7 @@
 namespace App\Models\Security;
 
 use App\Models\User\User;
-use App\Models\User\UserAccess;
+use App\Models\User\UserAdminAccess;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Carbon\Carbon;
 use Spatie\Permission\Models\Permission as SpatiePermission;
@@ -18,7 +18,8 @@ use Spatie\Permission\Models\Permission as SpatiePermission;
  * @property string $description
  * @property Carbon $created_at
  * @property Carbon $updated_at
- * @property User $user
+ * @property User[] $users
+ * @property User[] $usersViaAdmin
  */
 class Permission extends SpatiePermission
 {
@@ -51,8 +52,8 @@ class Permission extends SpatiePermission
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function user()
+    public function usersViaAdmin()
     {
-        return $this->belongsToMany(User::class, 'user_access_group_permissions', 'permission_id', 'user_id');
+        return $this->belongsToMany(User::class, 'user_admin_access_permissions', 'permission_id', 'user_id');
     }
 }

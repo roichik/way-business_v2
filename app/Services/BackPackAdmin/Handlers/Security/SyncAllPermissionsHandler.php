@@ -3,9 +3,7 @@
 namespace App\Services\BackPackAdmin\Handlers\Security;
 
 use App\Models\CompanyStructure\Company;
-use App\Models\Security\AccessGroup;
-use App\Models\Security\Permission;
-use App\Models\Security\Role;
+use App\Models\User\UserAdminAccessGroup;
 use App\Models\User\User;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -62,20 +60,20 @@ class SyncAllPermissionsHandler
      */
     private function consolidateAll()
     {
-        /** @var AccessGroup $accessGroup */
-        foreach ($this->user->accessGroups as $accessGroup) {
+        /** @var UserAdminAccessGroup $adminAccessGroup */
+        foreach ($this->user->adminAccessGroups as $adminAccessGroup) {
             $this
-                ->consolidateRole($accessGroup->roles)
-                ->consolidatePermissions($accessGroup->permissions)
-                ->consolidateFlags($accessGroup->flags)
-                ->consolidateCountries($accessGroup->companies);
+                ->consolidateRole($adminAccessGroup->roles)
+                ->consolidatePermissions($adminAccessGroup->permissions)
+                ->consolidateFlags($adminAccessGroup->flags)
+                ->consolidateCountries($adminAccessGroup->companies);
         }
 
         $this
-            ->consolidateRole($this->user->accessRoles)
-            ->consolidatePermissions($this->user->accessPermissions)
-            ->consolidateFlags($this->user->userAccess->flags)
-            ->consolidateCountries($this->user->accessCompanies);
+            ->consolidateRole($this->user->adminAccessRoles)
+            ->consolidatePermissions($this->user->adminAccessPermissions)
+            ->consolidateFlags($this->user->adminAccess->flags)
+            ->consolidateCountries($this->user->adminAccessCompanies);
 
         return $this;
     }

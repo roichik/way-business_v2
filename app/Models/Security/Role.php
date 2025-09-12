@@ -15,7 +15,8 @@ use Spatie\Permission\Models\Role as SpatieRole;
  * @property string $description
  * @property Carbon $created_at
  * @property Carbon $updated_at
- * @property User $user
+ * @property User[] $users
+ * @property User[] $usersViaAdmin
  */
 class Role extends SpatieRole
 {
@@ -24,8 +25,8 @@ class Role extends SpatieRole
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function userAccess()
+    public function usersViaAdmin()
     {
-        return $this->belongsToMany(User::class, 'user_access_group_roles', 'role_id', 'user_id');
+        return $this->belongsToMany(User::class, 'user_admin_access_roles', 'role_id', 'user_id');
     }
 }
