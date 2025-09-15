@@ -21,7 +21,9 @@ use Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Backpack\CRUD\app\Library\Widget;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * Class UserCrudController
@@ -384,12 +386,14 @@ class UserCrudController extends BaseCrudController
     {
         DB::beginTransaction();
         try {
-            $password = $this->crud->getRequest()->request->get('password');
-            if ($password === null || $password === '') {
-                $this->crud->getRequest()->request->remove('password');
+            // Если доступ только на уровне компании пользователя - очищаем список других компаний, если он был выбран
+            $flagAccessOnlyUserCompany = $this->crud->getRequest()->request->get(AccessGroupFlagDictionary::ACCESS_ONLY_AT_THE_USER_COMPANY_LEVEL);
+            if ($flagAccessOnlyUserCompany) {
+                $this->crud->getRequest()->request->set('adminAccessCompanies', []);
             }
 
             $response = $this->traitStore();
+
             $this->updateUserAdminAccessFlags();
             $this->updateUserCompanyStructure();
         } catch (\Throwable $exception) {
@@ -406,7 +410,6 @@ class UserCrudController extends BaseCrudController
                 User::find($this->crud->getCurrentEntryId())
             );
 
-
         return $response;
     }
 
@@ -417,12 +420,20 @@ class UserCrudController extends BaseCrudController
     {
         DB::beginTransaction();
         try {
+
             $password = $this->crud->getRequest()->request->get('password');
-            if ($password === null || $password === '') {
+            if ($password === null || $password === '' || Hash::check($password, User::find($this->crud->getCurrentEntryId())->password)) {
                 $this->crud->getRequest()->request->remove('password');
             }
 
+            // Если доступ только на уровне компании пользователя - очищаем список других компаний, если он был выбран
+            $flagAccessOnlyUserCompany = $this->crud->getRequest()->request->get(AccessGroupFlagDictionary::ACCESS_ONLY_AT_THE_USER_COMPANY_LEVEL);
+            if ($flagAccessOnlyUserCompany) {
+                $this->crud->getRequest()->request->set('adminAccessCompanies', []);
+            }
+
             $response = $this->traitUpdate();
+
             $this->updateUserAdminAccessFlags();
             $this->updateUserCompanyStructure();
         } catch (\Throwable $exception) {
