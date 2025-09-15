@@ -11,6 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('access_addons', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('user_id')->nullable(false);
             $table->json('flags')->nullable(true);
 

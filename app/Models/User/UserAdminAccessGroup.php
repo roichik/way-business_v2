@@ -83,4 +83,50 @@ class UserAdminAccessGroup extends BaseModel
     {
         return $this->belongsToMany(Company::class, 'admin_access_group_companies', 'access_group_id', 'company_id');
     }
+
+
+    /**
+     * @return array
+     */
+    public function flagAsArray()
+    {
+        if (!$this->flags) {
+            return [];
+        }
+
+        $flags = [];
+        foreach ($this->flags as $id => $visible) {
+            if (!$visible) {
+                continue;
+            }
+            $flags[$id] = AccessGroupFlagDictionary::getTitleById($id);
+        }
+
+        return $flags;
+    }
+
+    /**
+     * @return array
+     */
+    public function flagById($id, $default = null)
+    {
+        if (!$this->flags) {
+            return [];
+        }
+
+        return $this->flags[$id] ?? $default;
+    }
+
+    /**
+     * @param $flag
+     * @return bool
+     */
+    public function hasFlag($flag)
+    {
+        if (!$this->flags) {
+            return false;
+        }
+
+        return in_array($flag, $this->flags);
+    }
 }

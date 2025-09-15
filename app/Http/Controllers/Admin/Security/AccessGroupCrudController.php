@@ -17,6 +17,8 @@ use Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Backpack\CRUD\app\Library\Widget;
+use Illuminate\Support\Facades\DB;
+use App\Services\BackPackAdmin\BackPackAdminService;
 
 /**
  * Class AccessGroupCrudController
@@ -225,12 +227,21 @@ class AccessGroupCrudController extends BaseCrudController
         ]);
 
         //Флаги
-        foreach (AccessGroupFlagDictionary::getTitleCollection() as $key => $label) {
+        foreach (AccessGroupFlagDictionary::getTitleCollection() as $id => $label) {
+            $flagValue = AccessGroupFlagDictionary::getDefaultValueById($id);
+            if ($this->crud->getCurrentEntryId()) {
+                $flagValue = UserAdminAccessGroup::find($this->crud->getCurrentEntryId())
+                    ->flagById(
+                        $id,
+                        AccessGroupFlagDictionary::getDefaultValueById($id)
+                    );
+            }
+
             CRUD::field([
                 'label'    => $label,
                 'type'     => 'checkbox',
-                'name'     => $key,
-                'default'  => AccessGroupFlagDictionary::getDefaultValueById($key),
+                'name'     => $id,
+                'default'  => $flagValue,
                 'fake'     => true,
                 'store_in' => 'flags',
             ]);
@@ -257,5 +268,32 @@ class AccessGroupCrudController extends BaseCrudController
     {
         $this->setupCreateOperation();
         CRUD::setValidation(AccessGroupUpdateRequest::class);
+    }
+
+    /**
+     * @return RedirectResponse
+     */
+    public function update()
+    {
+        DB::beginTransaction();
+        try {
+            $response = $this->traitUpdate();
+            foreach (UserAdminAccessGroup::find($this->crud->getCurrentEntryId())->users as $user) {
+                /** @var BackPackAdminService $backPackService */
+                $backPackService = resolve(BackPackAdminService::class);
+                $backPackService
+                    ->security()
+                    ->syncAllPermissionsByUser(
+                        $user
+                    );
+            }
+
+        } catch (\Throwable $exception) {
+            DB::rollback();
+            throw $exception;
+        }
+        DB::commit();
+
+        return $response;
     }
 }

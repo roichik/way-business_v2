@@ -2,10 +2,11 @@
 
 namespace App\Services\Security\Handlers;
 
+use Illuminate\Database\Eloquent\Collection as DatabaseCollection;
+use App\Extensions\Collection;
 use App\Models\CompanyStructure\Company;
 use App\Models\User\User;
 use App\Models\User\UserAdminAccessGroup;
-use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Собирает у пользователя в консолидированную структуру права, роли и других обьекты доступа
@@ -13,19 +14,36 @@ use Illuminate\Database\Eloquent\Collection;
  */
 class ConsolidatedSecurityStructureByUserHandler
 {
-    private $permissions = [];
+    /**
+     * @var Collection
+     */
+    private $permissions;
 
-    private $roles = [];
+    /**
+     * @var Collection
+     */
+    private $roles;
 
-    private $flags = [];
+    /**
+     * @var Collection
+     */
+    private $flags;
 
-    private $companies = [];
+    /**
+     * @var Collection
+     */
+    private $companies;
 
     /**
      * @param User $user
      */
     public function __construct(private User $user)
     {
+        $this->permissions = new Collection();
+        $this->roles = new Collection();
+        $this->flags = new Collection();
+        $this->companies = new Collection();
+
         $this->handler();
     }
 
@@ -53,35 +71,35 @@ class ConsolidatedSecurityStructureByUserHandler
     }
 
     /**
-     * @return array
+     * @return Collection
      */
-    public function permissions(): array
+    public function permissions()
     {
         return $this->permissions;
     }
 
     /**
-     * @return array
+     * @return Collection
      */
-    public function roles(): array
+    public function roles()
     {
         return $this->roles;
     }
 
     /**
-     * @return array
+     * @return Collection
      */
-    public function flags(): array
+    public function flags()
     {
         return $this->flags;
     }
 
     /**
-     * @return array
+     * @return Collection
      */
-    public function countries(): array
+    public function companies()
     {
-        return $this->countries;
+        return $this->companies;
     }
 
     /**
@@ -90,20 +108,20 @@ class ConsolidatedSecurityStructureByUserHandler
      * @param mixed $data
      * @return void
      */
-    private function addUniqueConsolidateData(string $consolidatedKey, string $dataKey, mixed $data)
+    private function addUniqueConsolidateData(string $consolidatedKey, string|int $dataKey, mixed $data)
     {
-        if (array_key_exists($dataKey, $this->{$consolidatedKey})) {
+        if ($this->{$consolidatedKey}->has($dataKey)) {
             return;
         }
 
-        $this->{$consolidatedKey}[$dataKey] = $data;
+        $this->{$consolidatedKey}->addByKey($dataKey, $data);
     }
 
     /**
-     * @param Collection $roles
+     * @param DatabaseCollection $roles
      * @return $this
      */
-    private function consolidateRole(Collection $roles)
+    private function consolidateRole(DatabaseCollection $roles)
     {
         foreach ($roles as $role) {
             $this->addUniqueConsolidateData(
@@ -117,10 +135,10 @@ class ConsolidatedSecurityStructureByUserHandler
     }
 
     /**
-     * @param Collection $permissions
+     * @param DatabaseCollection $permissions
      * @return $this
      */
-    private function consolidatePermissions(Collection $permissions)
+    private function consolidatePermissions(DatabaseCollection $permissions)
     {
         foreach ($permissions as $permission) {
             $this->addUniqueConsolidateData(
@@ -140,8 +158,8 @@ class ConsolidatedSecurityStructureByUserHandler
     private function consolidateFlags(array $flags)
     {
         foreach ($flags as $id => $value) {
-            if ($value && !in_array($id, $this->flags)) {
-                $this->flags[] = $id;
+            if ($value && !in_array($id, $this->flags->all())) {
+                $this->flags->add($id);
             }
         }
 
@@ -152,7 +170,7 @@ class ConsolidatedSecurityStructureByUserHandler
      * @param Company $companies
      * @return $this
      */
-    private function consolidateCountries(Collection $companies)
+    private function consolidateCountries(DatabaseCollection $companies)
     {
         foreach ($companies as $company) {
             $this->addUniqueConsolidateData(

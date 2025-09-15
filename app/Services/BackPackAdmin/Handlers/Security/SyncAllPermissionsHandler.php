@@ -11,7 +11,7 @@ use App\Services\Security\SecurityService;
 class SyncAllPermissionsHandler
 {
     /**
-     * @var array
+     * @var SecurityStructureByUserHandler
      */
     private $consolidatedData;
 
@@ -40,6 +40,49 @@ class SyncAllPermissionsHandler
      */
     public function handle()
     {
+        $this->user->syncRoles($this->consolidatedData->roles());
+        $this->user->syncPermissions($this->consolidatedData->permissions());
+        $this
+            ->syncFlags()
+            ->syncCompanies();
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    private function syncFlags()
+    {
+        if ($this->user->accessAddon) {
+            $this
+                ->user
+                ->accessAddon
+                ->fill([
+                    'flags' => $this->consolidatedData->flags()
+                ])
+                ->save();
+        } else {
+            $this
+                ->user
+                ->accessAddon()
+                ->create([
+                    'flags' => $this->consolidatedData->flags()
+                ]);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    private function syncCompanies()
+    {
+        $this
+            ->user
+            ->accessCompanies()
+            ->sync($this->consolidatedData->companies()->pluck('id')->all());
 
         return $this;
     }

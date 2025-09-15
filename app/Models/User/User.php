@@ -4,6 +4,7 @@ namespace App\Models\User;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\CompanyStructure\Company;
+use App\Models\Security\AccessAddons;
 use App\Models\Security\Permission;
 use App\Models\Security\Role;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
@@ -29,16 +30,17 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property UserDetail $userDetail
- * Roles and permission
+ * Security:
  * @property Role[] $roles
  * @property Permission[] $permissions
- * Admin access..
+ * @property AccessAddons $accessAddon
+ * @property Company[] $accessCompanies
+ * Admin panel access:
  * @property UserAdminAccess $adminAccess
  * @property UserAdminAccessGroup[] $adminAccessGroups
  * @property Role[] $adminAccessRoles
  * @property Permission[] $adminAccessPermissions
  * @property Company[] $adminAccessCompanies
- * Security
  */
 class User extends Authenticatable
 {
@@ -86,6 +88,23 @@ class User extends Authenticatable
     public function detail()
     {
         return $this->hasOne(UserDetail::class, 'user_id');
+    }
+
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function accessAddon()
+    {
+        return $this->hasOne(AccessAddons::class, 'user_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function accessCompanies()
+    {
+        return $this->belongsToMany(Company::class, 'access_companies', 'user_id', 'company_id');
     }
 
     /**
