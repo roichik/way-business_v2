@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin\Security;
 
 use App\Dictionaries\Security\AccessGroupFlagDictionary;
 use App\Http\Controllers\Admin\BaseCrudController;
-use App\Http\Requests\Admin\Security\AccessGroupCreateRequest;
-use App\Http\Requests\Admin\Security\AccessGroupUpdateRequest;
+use App\Http\Requests\Admin\Security\CreateAccessGroupRequest;
+use App\Http\Requests\Admin\Security\UpdateAccessGroupRequest;
 use App\Models\CompanyStructure\Company;
 use App\Models\Security\Permission;
 use App\Models\Security\Role;
@@ -194,7 +194,7 @@ class AccessGroupCrudController extends BaseCrudController
      */
     protected function setupCreateOperation()
     {
-        CRUD::setValidation(AccessGroupCreateRequest::class);
+        CRUD::setValidation(CreateAccessGroupRequest::class);
         CRUD::field('title')->type('text')->label('Название');
         CRUD::field('description')->type('text')->label('Описание');
         CRUD::field([
@@ -267,7 +267,7 @@ class AccessGroupCrudController extends BaseCrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
-        CRUD::setValidation(AccessGroupUpdateRequest::class);
+        CRUD::setValidation(UpdateAccessGroupRequest::class);
     }
 
     /**

@@ -2,7 +2,8 @@
 
 namespace App\Services\User;
 
-use App\Services\User\Operations\CrudOperation;
+use App\Services\User\Operations\ProfileCrudOperation;
+use App\Services\User\Operations\UserCrudOperation;
 
 /**
  * Class UserService
@@ -17,11 +18,19 @@ class UserService
     }
 
     /**
-     * @return CrudOperation
+     * @return UserCrudOperation
      */
-    public function crud()
+    public function userCrud()
     {
-        return new CrudOperation($this);
+        return new UserCrudOperation($this);
+    }
+
+    /**
+     * @return ProfileCrudOperation
+     */
+    public function profileCrud()
+    {
+        return new ProfileCrudOperation($this);
     }
 
 }

@@ -5,9 +5,9 @@ namespace App\Http\Requests\Admin\Security;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Class RoleCreateRequest
+ * Class CreateRoleRequest
  */
-class RoleCreateRequest extends FormRequest
+class CreateRoleRequest extends FormRequest
 {
     /**
      * @return array

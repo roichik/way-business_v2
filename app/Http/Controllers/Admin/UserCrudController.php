@@ -6,8 +6,8 @@ use App\Dictionaries\Security\AccessGroupFlagDictionary;
 use App\Dictionaries\User\UserFlagDictionary;
 use App\Dictionaries\User\UserGenderDictionary;
 use App\Exceptions\Exception;
-use App\Http\Requests\Admin\User\UserCreateRequest;
-use App\Http\Requests\Admin\User\UserUpdateRequest;
+use App\Http\Requests\Admin\User\CreateUserRequest;
+use App\Http\Requests\Admin\User\UpdateUserRequest;
 use App\Models\CompanyStructure\Company;
 use App\Models\CompanyStructure\Division;
 use App\Models\CompanyStructure\Position;
@@ -223,7 +223,7 @@ class UserCrudController extends BaseCrudController
      */
     protected function setupCreateOperation()
     {
-        CRUD::setValidation(UserCreateRequest::class);
+        CRUD::setValidation(CreateUserRequest::class);
 
         CRUD::field('nickname')->type('text')->label('Пользователь')->tab('Общие сведенья');
         CRUD::field('email')->type('text')->label('Email')->attributes(['autocomplete' => 'off'])->tab('Общие сведенья');
@@ -267,7 +267,7 @@ class UserCrudController extends BaseCrudController
      */
     protected function setupUpdateOperation()
     {
-        CRUD::setValidation(UserUpdateRequest::class);
+        CRUD::setValidation(UpdateUserRequest::class);
 
         CRUD::field('nickname')->type('text')->label('Пользователь')->attributes(['disabled' => 'disabled'])->tab('Общие сведенья');
         CRUD::field('email')->type('text')->label('Email')->attributes(['autocomplete' => 'off', 'disabled' => 'disabled'])->tab('Общие сведенья');

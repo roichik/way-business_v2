@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin\CompanyStructure;
 
 use App\Http\Controllers\Admin\BaseCrudController;
-use App\Http\Requests\Admin\Security\PositionCreateRequest;
-use App\Http\Requests\Admin\Security\PositionUpdateRequest;
+use App\Http\Requests\Admin\Security\CreatePositionRequest;
+use App\Http\Requests\Admin\Security\UpdatePositionRequest;
 use App\Models\CompanyStructure\Division;
 use App\Models\CompanyStructure\Position;
 use Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
@@ -103,7 +103,7 @@ class PositionCrudController extends BaseCrudController
      */
     protected function setupCreateOperation()
     {
-        CRUD::setValidation(PositionCreateRequest::class);
+        CRUD::setValidation(CreatePositionRequest::class);
         CRUD::field('title')->type('text')->label('Название');
         CRUD::field([
             'label'                      => 'Подразделение/отдел',
@@ -124,6 +124,6 @@ class PositionCrudController extends BaseCrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
-        CRUD::setValidation(PositionUpdateRequest::class);
+        CRUD::setValidation(UpdatePositionRequest::class);
     }
 }

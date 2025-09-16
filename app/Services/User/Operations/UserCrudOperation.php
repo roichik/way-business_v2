@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * Crud operations for user
- * Class CrudOperation
+ * Class UserCrudOperation
  */
-class CrudOperation extends AbstractOperation
+class UserCrudOperation extends AbstractOperation
 {
     /**
      * @param CreateUserDto $userDto

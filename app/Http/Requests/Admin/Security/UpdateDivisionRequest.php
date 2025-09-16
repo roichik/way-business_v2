@@ -5,9 +5,9 @@ namespace App\Http\Requests\Admin\Security;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Class DivisionCreateRequest
+ * Class UpdateDivisionRequest
  */
-class DivisionCreateRequest extends FormRequest
+class UpdateDivisionRequest extends FormRequest
 {
     /**
      * @return array

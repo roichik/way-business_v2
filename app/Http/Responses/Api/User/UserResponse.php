@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Responses\Api\Profile;
+namespace App\Http\Responses\Api\User\Profile;
 
 use App\Models\User\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * Class ProfileDetailResponse
+ * Class UserResponse
  */
-class ProfileDetailResponse extends JsonResource
+class UserResponse extends JsonResource
 {
     /**
      * Transform the resource into an array.

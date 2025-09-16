@@ -5,9 +5,9 @@ namespace App\Http\Requests\Admin\Security;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Class RoleUpdateRequest
+ * Class UpdateAccessGroupRequest
  */
-class RoleUpdateRequest extends FormRequest
+class UpdateAccessGroupRequest extends FormRequest
 {
     /**
      * @return array
@@ -15,9 +15,8 @@ class RoleUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'        => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string', 'max:255'],
-            'permissions' => ['required', 'min:1']
+            'title'       => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string', 'max:1000'],
         ];
     }
 
@@ -27,9 +26,8 @@ class RoleUpdateRequest extends FormRequest
     public function attributes()
     {
         return [
-            'name'        => 'Название',
+            'title'       => 'Название',
             'description' => 'Описание',
-            'permissions' => 'Права доступа'
         ];
     }
 }

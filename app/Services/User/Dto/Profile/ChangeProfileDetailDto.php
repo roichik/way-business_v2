@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Services\User\Dto;
+namespace App\Services\User\Dto\Profile;
 
 use App\Interfaces\AbstractDto;
+use App\Services\User\Dto\CreateUserDetailDto;
 use Carbon\Carbon;
 
 /**
- * Class CreateUserDetailDto
+ * Class ChangeUserProfileDto
  */
-class CreateUserDetailDto extends AbstractDto
+class ChangeProfileDetailDto extends AbstractDto
 {
     /**
      * @var string
@@ -34,26 +35,6 @@ class CreateUserDetailDto extends AbstractDto
      * @var Carbon|null
      */
     public $birthdayAt;
-
-    /**
-     * @var int
-     */
-    public $flagId;
-
-    /**
-     * @var int|null
-     */
-    public $companyId;
-
-    /**
-     * @var int|null
-     */
-    public $divisionId;
-
-    /**
-     * @var int|null
-     */
-    public $positionId;
 
     /**
      * @param Carbon $birthdayAt

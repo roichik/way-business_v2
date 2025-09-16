@@ -7,9 +7,9 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 /**
- * Class UserCreateRequest
+ * Class CreateUserRequest
  */
-class UserCreateRequest extends FormRequest
+class CreateUserRequest extends FormRequest
 {
     /**
      * @return array

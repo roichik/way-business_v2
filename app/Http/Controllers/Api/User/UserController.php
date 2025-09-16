@@ -7,9 +7,9 @@ use App\Dto\PaginationDto;
 use App\Exceptions\Exception;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\PaginationRequest;
-use App\Http\Requests\Api\User\UserChangeRequest;
-use App\Http\Requests\Api\User\UserCreateRequest;
-use App\Http\Responses\Api\Profile\ProfileDetailResponse;
+use App\Http\Requests\Api\User\ChangeProfileRequest;
+use App\Http\Requests\Api\User\CreateUserRequest;
+use App\Http\Responses\Api\User\Profile\UserResponse;
 use App\Models\User\User;
 use App\Services\User\Dto\ChangeUserDto;
 use App\Services\User\Dto\CreateUserDto;
@@ -23,40 +23,39 @@ use Illuminate\Support\Facades\Auth;
  */
 class UserController extends Controller
 {
-
     /**
-     * @param UserCreateRequest $request
+     * @param CreateUserRequest $request
      * @param UserService $userService
-     * @return JsonResponse
+     * @return array
      * @throws \Throwable
      */
-    public function create(UserCreateRequest $request, UserService $userService)
+    public function create(CreateUserRequest $request, UserService $userService)
     {
         $dto = new CreateUserDto($request->validated());
         $user = $userService
-            ->crud()
+            ->userCrud()
             ->create($dto);
 
-        return new JsonResponse([
-            'id' => $user->id,
-        ]);
+        return (new UserResponse($user))
+            ->toArray(new Request());
     }
 
     /**
      * @param User $user
-     * @param UserChangeRequest $request
+     * @param ChangeProfileRequest $request
      * @param UserService $userService
-     * @return JsonResponse
+     * @return array
      * @throws \Throwable
      */
-    public function change(User $user, UserChangeRequest $request, UserService $userService)
+    public function update(User $user, ChangeProfileRequest $request, UserService $userService)
     {
         $dto = new ChangeUserDto($request->validated());
         $userService
-            ->crud()
+            ->userCrud()
             ->change($user, $dto);
 
-        return new JsonResponse();
+        return (new UserResponse($user))
+            ->toArray(new Request());
     }
 
     /**
@@ -65,7 +64,7 @@ class UserController extends Controller
      */
     public function one(User $user)
     {
-        return (new ProfileDetailResponse($user))
+        return (new UserResponse($user))
             ->toArray(new Request());
     }
 
@@ -77,10 +76,10 @@ class UserController extends Controller
     public function listByPaginate(PaginationRequest $request, UserService $userService)
     {
         $collection = $userService
-            ->crud()
+            ->userCrud()
             ->listByPaginate((new PaginationDto($request->validated())));
 
-        return ProfileDetailResponse::collection($collection);
+        return UserResponse::collection($collection);
     }
 
     /**
@@ -99,7 +98,7 @@ class UserController extends Controller
         }
 
         $userService
-            ->crud()
+            ->userCrud()
             ->delete($user);
 
         return new JsonResponse();

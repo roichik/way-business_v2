@@ -5,9 +5,9 @@ namespace App\Http\Requests\Admin\Security;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Class AccessGroupCreateRequest
+ * Class CreateAccessGroupRequest
  */
-class AccessGroupUpdateRequest extends FormRequest
+class CreateAccessGroupRequest extends FormRequest
 {
     /**
      * @return array

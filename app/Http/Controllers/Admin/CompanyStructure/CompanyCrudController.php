@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin\CompanyStructure;
 
 use App\Http\Controllers\Admin\BaseCrudController;
-use App\Http\Requests\Admin\Security\CompanyCreateRequest;
-use App\Http\Requests\Admin\Security\CompanyUpdateRequest;
+use App\Http\Requests\Admin\Security\CreateCompanyRequest;
+use App\Http\Requests\Admin\Security\UpdateCompanyRequest;
 use App\Models\CompanyStructure\Company;
 use Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
@@ -100,7 +100,7 @@ class CompanyCrudController extends BaseCrudController
      */
     protected function setupCreateOperation()
     {
-        CRUD::setValidation(CompanyCreateRequest::class);
+        CRUD::setValidation(CreateCompanyRequest::class);
         CRUD::field('title')->type('text')->label('Название');
         CRUD::field([
             'label'         => 'Управляющая компания',
@@ -128,7 +128,7 @@ class CompanyCrudController extends BaseCrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
-        CRUD::setValidation(CompanyUpdateRequest::class);
+        CRUD::setValidation(UpdateCompanyRequest::class);
     }
 
     /**
