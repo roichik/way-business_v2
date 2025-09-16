@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Admin\User;
 
-use App\Dictionaries\User\GenderDictionary;
+use App\Dictionaries\User\UserGenderDictionary;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -27,8 +27,9 @@ class UserCreateRequest extends FormRequest
             'detail.first_name'  => ['required', 'string', 'max:50',],
             'detail.last_name'   => ['required', 'string', 'max:50',],
             'detail.father_name' => ['nullable', 'string', 'max:50',],
-            'detail.gender'      => ['required', 'string', Rule::in(GenderDictionary::getCollection())],
+            'detail.gender'      => ['required', 'string', Rule::in(UserGenderDictionary::getCollection())],
             'detail.birthday_at' => ['date'],
+            'detail.type_id'     => ['required', 'exists:user_types,id'],
             'detail.company_id'  => ['nullable', 'exists:companies,id'],
             'detail.division_id' => ['nullable', 'exists:divisions,id'],
             'detail.position_id' => ['nullable', 'exists:positions,id'],
@@ -53,6 +54,7 @@ class UserCreateRequest extends FormRequest
             'detail.father_name' => 'Отчество',
             'detail.gender'      => 'Пол',
             'detail.birthday_at' => 'Дата роджения',
+            'detail.type_id'     => 'Тип пользователя',
             'detail.company_id'  => 'Компания',
             'detail.division_id' => 'Подразделение/отдел',
             'detail.position_id' => 'Должность',

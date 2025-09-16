@@ -2,23 +2,21 @@
 
 namespace App\Http\Controllers\Api\User;
 
+use App\Dictionaries\User\UserFlagDictionary;
 use App\Dto\PaginationDto;
-use App\Facades\Activation;
+use App\Exceptions\Exception;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\PaginationRequest;
 use App\Http\Requests\Api\User\UserChangeRequest;
 use App\Http\Requests\Api\User\UserCreateRequest;
 use App\Http\Responses\Api\Profile\ProfileDetailResponse;
-use App\Models\User\ActivationCode;
-use App\Models\User\ReferrerCodeGenerator;
 use App\Models\User\User;
-use App\Services\Brevo\Events\BrevoEventsService;
-use App\Services\Brevo\Events\Dictionaries\EventDictionary;
 use App\Services\User\Dto\ChangeUserDto;
 use App\Services\User\Dto\CreateUserDto;
 use App\Services\User\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class UserController
@@ -63,8 +61,7 @@ class UserController extends Controller
 
     /**
      * @param User $user
-     * @param UserService $userService
-     * @return JsonResponse
+     * @return array
      */
     public function one(User $user)
     {
@@ -73,8 +70,9 @@ class UserController extends Controller
     }
 
     /**
+     * @param PaginationRequest $request
      * @param UserService $userService
-     * @return JsonResponse
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function listByPaginate(PaginationRequest $request, UserService $userService)
     {
@@ -90,19 +88,20 @@ class UserController extends Controller
      * @param UserService $userService
      * @return JsonResponse
      */
-    public function changePassword(User $user, UserService $userService)
-    {
-
-        return new JsonResponse();
-    }
-
-    /**
-     * @param User $user
-     * @param UserService $userService
-     * @return JsonResponse
-     */
     public function delete(User $user, UserService $userService)
     {
+        if ($user->id == Auth::id()) {
+            throw new Exception('Вы не можете удалить пользователя, под которым авторизированы');
+        }
+
+        if ($user->hasFlag(UserFlagDictionary::PROHIBIT_DELETION)) {
+            throw new Exception('Удаление пользователя запрещено');
+        }
+
+        $userService
+            ->crud()
+            ->delete($user);
+
         return new JsonResponse();
     }
 

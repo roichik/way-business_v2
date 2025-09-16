@@ -3,10 +3,12 @@
 namespace App\Models\User;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Dictionaries\User\UserFlagDictionary;
 use App\Models\CompanyStructure\Company;
 use App\Models\Security\AccessAddons;
 use App\Models\Security\Permission;
 use App\Models\Security\Role;
+use App\Models\Traits\FlagJsonTrait;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -27,9 +29,10 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string $password
  * @property string|null $remember_token
  * @property bool $is_enabled
+ * @property array $flags
  * @property Carbon $created_at
  * @property Carbon $updated_at
- * @property UserDetail $userDetail
+ * @property UserDetail $detail
  * Security:
  * @property Role[] $roles
  * @property Permission[] $permissions
@@ -44,7 +47,7 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens, HasRoles, CrudTrait;
+    use HasFactory, Notifiable, HasApiTokens, HasRoles, CrudTrait, FlagJsonTrait;
 
     /**
      * @var list<string>
@@ -73,6 +76,7 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
+            'flags'             => 'array',
             'is_enabled'        => 'boolean',
             'password'          => 'hashed',
             'email_verified_at' => 'datetime',
@@ -83,13 +87,20 @@ class User extends Authenticatable
     }
 
     /**
+     * @return array|null
+     */
+    public function flagDictionaryClass(): string
+    {
+        return UserFlagDictionary::class;
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function detail()
     {
         return $this->hasOne(UserDetail::class, 'user_id');
     }
-
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

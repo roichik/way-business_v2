@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests\Api\User;
 
-use App\Repository\Order\Entity\PaginationEntity;
+use App\Dictionaries\User\UserGenderDictionary;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 /**
  * Class UserChangeRequest
@@ -16,12 +17,23 @@ class UserChangeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'phone'    => ['string', 'max:50'],
-            'detail.firstName'  => ['required', 'string', 'max:50',],
-            'detail.lastName'   => ['required', 'string', 'max:50',],
-            'detail.fatherName' => ['string', 'max:50',],
-            'detail.gender'     => ['required', 'string', 'max:10',],
-            'detail.birthdayAt' => ['date'],
+            'nickname'             => ['nullable', 'unique:users', 'nickname', 'max:100'],
+            'email'                => ['nullable', 'unique:users', 'email', 'max:50'],
+            'emailVerifiedAt'      => ['nullable', 'date'],
+            'phone'                => ['nullable', 'string', 'max:50'],
+            'phoneVerifiedAt'      => ['nullable', 'date'],
+            'password'             => ['nullable', 'confirmed', 'min:6', 'max:40', 'string'],
+            'passwordConfirmation' => ['required_with:password', 'string'],
+            'isEnabled'            => ['boolean'],
+            'detail.firstName'     => ['required', 'string', 'max:50',],
+            'detail.lastName'      => ['required', 'string', 'max:50',],
+            'detail.fatherName'    => ['nullable', 'string', 'max:50',],
+            'detail.gender'        => ['required', 'string', Rule::in(UserGenderDictionary::getCollection())],
+            'detail.birthdayAt'    => ['date'],
+            'detail.typeId'        => ['required', 'exists:user_types,id'],
+            'detail.companyId'     => ['nullable', 'exists:companies,id'],
+            'detail.divisionId'    => ['nullable', 'exists:divisions,id'],
+            'detail.positionId'    => ['nullable', 'exists:positions,id'],
         ];
     }
 }

@@ -10,15 +10,45 @@ use Carbon\Carbon;
  */
 class CreateUserDetailDto extends AbstractDto
 {
-    public string $firstName;
+    /**
+     * @var string
+     */
+    public $firstName;
 
-    public string $lastName;
+    /**
+     * @var string
+     */
+    public $lastName;
 
-    public string|null $fatherName;
+    /**
+     * @var string|null
+     */
+    public $fatherName;
 
-    public string $gender;
+    /**
+     * @var string
+     */
+    public $gender;
 
-    public Carbon|null $birthdayAt;
+    /**
+     * @var Carbon|null
+     */
+    public $birthdayAt;
+
+    /**
+     * @var int|null
+     */
+    public $companyId;
+
+    /**
+     * @var int|null
+     */
+    public $divisionId;
+
+    /**
+     * @var int|null
+     */
+    public $positionId;
 
     /**
      * @param Carbon $birthdayAt
@@ -26,7 +56,7 @@ class CreateUserDetailDto extends AbstractDto
      */
     public function setBirthdayAt(Carbon|string|null $birthdayAt)
     {
-        if($birthdayAt === null){
+        if ($birthdayAt === null) {
             return $this;
         }
         $this->birthdayAt = is_string($birthdayAt) ? new Carbon($birthdayAt) : $birthdayAt;

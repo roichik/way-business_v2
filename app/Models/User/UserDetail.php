@@ -14,6 +14,7 @@ use Carbon\Carbon;
  *
  * @property int $id
  * @property int $user_id
+ * @property int|null $type_id
  * @property int|null $company_id
  * @property int|null $division_id
  * @property int|null $position_id
@@ -24,6 +25,7 @@ use Carbon\Carbon;
  * @property Carbon|null $birthday_at
  * @property Carbon $created_at
  * @property Carbon $updated_at
+ * @property UserType $type
  * @property Company $company
  * @property Division $division
  * @property Position $position
@@ -46,6 +48,7 @@ class UserDetail extends BaseModel
         'father_name',
         'gender',
         'birthday_at',
+        'type_id',
         'company_id',
         'division_id',
         'position_id',
@@ -70,6 +73,14 @@ class UserDetail extends BaseModel
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function type()
+    {
+        return $this->belongsTo(UserType::class, 'type_id');
     }
 
     /**

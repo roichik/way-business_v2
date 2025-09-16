@@ -7,12 +7,12 @@ use App\Models\BaseModel;
 use App\Models\CompanyStructure\Company;
 use App\Models\Security\Permission;
 use App\Models\Security\Role;
+use App\Models\Traits\FlagJsonTrait;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Carbon\Carbon;
 
 /**
  * Групы доступа для админ части
- *
  * Class UserAdminAccessGroup
  *
  * @property int $id
@@ -29,7 +29,7 @@ use Carbon\Carbon;
  */
 class UserAdminAccessGroup extends BaseModel
 {
-    use CrudTrait;
+    use CrudTrait, FlagJsonTrait;
 
     /**
      * @var string
@@ -51,6 +51,14 @@ class UserAdminAccessGroup extends BaseModel
     protected $casts = [
         'flags' => 'array',
     ];
+
+    /**
+     * @return string|null
+     */
+    public function flagDictionaryClass(): ?string
+    {
+        return AccessGroupFlagDictionary::class;
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -82,51 +90,5 @@ class UserAdminAccessGroup extends BaseModel
     public function companies()
     {
         return $this->belongsToMany(Company::class, 'admin_access_group_companies', 'access_group_id', 'company_id');
-    }
-
-
-    /**
-     * @return array
-     */
-    public function flagAsArray()
-    {
-        if (!$this->flags) {
-            return [];
-        }
-
-        $flags = [];
-        foreach ($this->flags as $id => $visible) {
-            if (!$visible) {
-                continue;
-            }
-            $flags[$id] = AccessGroupFlagDictionary::getTitleById($id);
-        }
-
-        return $flags;
-    }
-
-    /**
-     * @return array
-     */
-    public function flagById($id, $default = null)
-    {
-        if (!$this->flags) {
-            return [];
-        }
-
-        return $this->flags[$id] ?? $default;
-    }
-
-    /**
-     * @param $flag
-     * @return bool
-     */
-    public function hasFlag($flag)
-    {
-        if (!$this->flags) {
-            return false;
-        }
-
-        return in_array($flag, $this->flags);
     }
 }

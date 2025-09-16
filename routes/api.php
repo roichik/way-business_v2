@@ -19,7 +19,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/change/{user}', [UserController::class, 'change']);
         Route::get('/one/{user}', [UserController::class, 'one']);
         Route::post('/list', [UserController::class, 'listByPaginate']);
-        Route::put('/changePassword/{user}', [UserController::class, 'changePassword']);
         Route::delete('/delete/{user}', [UserController::class, 'delete']);
     });
 

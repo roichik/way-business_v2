@@ -9,17 +9,45 @@ use App\Interfaces\AbstractDto;
  */
 class CreateUserDto extends AbstractDto
 {
-    public string $nickname;
+    /**
+     * @var string
+     */
+    public $nickname;
 
-    public string $email;
+    /**
+     * @var string
+     */
+    public $email;
 
-    public string|null $phone;
+    /**
+     * @var string|null
+     */
+    public $emailVerifiedAt;
 
-    public string $password;
+    /**
+     * @var string|null
+     */
+    public $phone;
 
-    public bool $isEnabled = true;
+    /**
+     * @var string|null
+     */
+    public $phoneVerifiedAt;
 
-    public CreateUserDetailDto $detail;
+    /**
+     * @var string
+     */
+    public $password;
+
+    /**
+     * @var bool
+     */
+    public $isEnabled = true;
+
+    /**
+     * @var CreateUserDetailDto
+     */
+    public $detail;
 
     /**
      * @param CreateUserDetailDto $detail

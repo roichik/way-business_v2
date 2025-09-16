@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Dictionaries\Security\AccessGroupFlagDictionary;
-use App\Dictionaries\User\GenderDictionary;
+use App\Dictionaries\User\UserFlagDictionary;
+use App\Dictionaries\User\UserGenderDictionary;
+use App\Exceptions\Exception;
 use App\Http\Requests\Admin\User\UserCreateRequest;
 use App\Http\Requests\Admin\User\UserUpdateRequest;
 use App\Models\CompanyStructure\Company;
@@ -12,6 +14,7 @@ use App\Models\CompanyStructure\Position;
 use App\Models\Security\Permission;
 use App\Models\Security\Role;
 use App\Models\User\User;
+use App\Models\User\UserType;
 use App\Services\BackPackAdmin\BackPackAdminService;
 use Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
 use Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
@@ -34,7 +37,9 @@ use Illuminate\Support\Facades\Hash;
 class UserCrudController extends BaseCrudController
 {
     use ListOperation;
-    use DeleteOperation;
+    use DeleteOperation {
+        destroy as traitDestory;
+    }
     use ShowOperation;
     use CreateOperation {
         store as traitStore;
@@ -89,9 +94,23 @@ class UserCrudController extends BaseCrudController
         CRUD::column('detail.gender')
             ->type('select_from_array')
             ->label('Пол')
-            ->options(GenderDictionary::getTitleCollection());
+            ->options(UserGenderDictionary::getTitleCollection());
 
         CRUD::column('detail.birthday_at')->type('date')->label('День рождения');
+
+        CRUD::column([
+            'label'         => 'Тип пользователя',
+            'type'          => 'select',
+            'name'          => 'detail.type_id',
+            'entity'        => 'detail.type',
+            'model'         => UserType::class,
+            'attribute'     => 'title',
+            'options'       => (function ($query) {
+                return $query->orderBy('title', 'ASC')->get();
+            }),
+            'relation_type' => 'BelongsTo',
+            'tab'           => 'Общие сведенья',
+        ]);
 
         CRUD::column([
             'label'         => 'Компания',
@@ -218,10 +237,26 @@ class UserCrudController extends BaseCrudController
         CRUD::field('detail.gender')
             ->type('select_from_array')
             ->label('Пол')
-            ->options(GenderDictionary::getTitleCollection())
+            ->options(UserGenderDictionary::getTitleCollection())
             ->tab('Общие сведенья');
         CRUD::field('detail.birthday_at')->type('date')->label('День рождения')->tab('Общие сведенья');
+
+        CRUD::field([
+            'label'         => 'Тип пользователя',
+            'type'          => 'select',
+            'name'          => 'detail.type_id',
+            'entity'        => 'detail.type',
+            'model'         => UserType::class,
+            'attribute'     => 'title',
+            'options'       => (function ($query) {
+                return $query->orderBy('title', 'ASC')->get();
+            }),
+            'relation_type' => 'BelongsTo',
+            'tab'           => 'Общие сведенья',
+        ]);
+
         $this->addCompanyStructureFields();
+
         CRUD::field('is_enabled')->type('boolean')->label('Активный')->tab('Общие сведенья');
 
         $this->addAccessFields();
@@ -246,9 +281,22 @@ class UserCrudController extends BaseCrudController
         CRUD::field('detail.gender')
             ->type('select_from_array')
             ->label('Пол')
-            ->options(GenderDictionary::getTitleCollection())
+            ->options(UserGenderDictionary::getTitleCollection())
             ->tab('Общие сведенья');
         CRUD::field('detail.birthday_at')->type('date')->label('День рождения')->tab('Общие сведенья');
+        CRUD::field([
+            'label'         => 'Тип пользователя',
+            'type'          => 'select',
+            'name'          => 'detail.type_id',
+            'entity'        => 'detail.type',
+            'model'         => UserType::class,
+            'attribute'     => 'title',
+            'options'       => (function ($query) {
+                return $query->orderBy('title', 'ASC')->get();
+            }),
+            'relation_type' => 'BelongsTo',
+            'tab'           => 'Общие сведенья',
+        ]);
         $this->addCompanyStructureFields();
         CRUD::field('is_enabled')->type('boolean')->label('Активный')->tab('Общие сведенья');
 
@@ -454,6 +502,20 @@ class UserCrudController extends BaseCrudController
     }
 
     /**
+     * @param $id
+     * @return string
+     * @throws Exception
+     */
+    public function destroy($id)
+    {
+        if (User::find($this->crud->getCurrentEntryId())->hasFlag(UserFlagDictionary::PROHIBIT_DELETION)) {
+            throw new Exception('Удаление пользователя запрещено');
+        }
+
+        return $this->traitDestory($id);
+    }
+
+    /**
      * @return void
      */
     private function updateUserCompanyStructure()
@@ -462,6 +524,7 @@ class UserCrudController extends BaseCrudController
         $userDetail = User::find($this->crud->getCurrentEntryId())->detail;
         $userDetail
             ->fill([
+                'type_id'     => $all['detail']['type_id'],
                 'company_id'  => $all['detail']['company_id'],
                 'division_id' => $all['detail']['division_id'],
                 'position_id' => $all['detail']['position_id'],

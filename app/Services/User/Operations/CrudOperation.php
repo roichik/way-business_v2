@@ -4,6 +4,7 @@ namespace App\Services\User\Operations;
 
 use App\Dto\PaginationDto;
 use App\Models\User\User;
+use App\Services\User\Dto\ChangeUserDto;
 use App\Services\User\Dto\CreateUserDto;
 use Illuminate\Support\Facades\DB;
 
@@ -43,10 +44,10 @@ class CrudOperation extends AbstractOperation
     }
 
     /**
-     * @param  $userDto
+     * @param  ChangeUserDto $userDto
      * @return boolean
      */
-    public function change(User $user, CreateUserDto $userDto)
+    public function change(User $user, ChangeUserDto $userDto)
     {
         DB::beginTransaction();
 
@@ -79,5 +80,14 @@ class CrudOperation extends AbstractOperation
             ->paginate(
                 $paginationDto->per_page
             );
+    }
+
+    /**
+     * @param  User $user
+     * @return boolean
+     */
+    public function delete(User $user)
+    {
+        return $user->delete();
     }
 }

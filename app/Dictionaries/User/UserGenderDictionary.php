@@ -5,9 +5,9 @@ namespace App\Dictionaries\User;
 use App\Interfaces\AbstractDictionary;
 
 /**
- * Class GenderDictionary
+ * Class UserGenderDictionary
  */
-class GenderDictionary extends AbstractDictionary
+class UserGenderDictionary extends AbstractDictionary
 {
     const MAN = 'm';
     const WOMAN = 'w';
@@ -24,8 +24,8 @@ class GenderDictionary extends AbstractDictionary
      * @var string[]
      */
     protected static $titleCollection = [
-        self::MAN   => 'Man',
-        self::WOMAN => 'Woman',
+        self::MAN   => 'Мужчина',
+        self::WOMAN => 'Женщина',
     ];
 
 }
