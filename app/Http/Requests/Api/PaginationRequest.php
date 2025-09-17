@@ -17,7 +17,7 @@ class PaginationRequest extends FormRequest
         return [
             'per_page' => ['nullable', 'integer'],
             'page'     => ['nullable', 'integer'],
-            'sort'     => [Rule::in(['asc', 'desc'])],
+            'sort'     => ['nullable', 'array'],
         ];
     }
 }

@@ -77,7 +77,9 @@ class UserController extends Controller
     {
         $collection = $userService
             ->userCrud()
-            ->listByPaginate((new PaginationDto($request->validated())));
+            ->listByPaginate(
+                (new PaginationDto($request->validated()))
+            );
 
         return UserResponse::collection($collection);
     }
