@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Api\User;
+namespace App\Http\Requests\Api\User\Profile;
 
 use App\Dictionaries\User\UserGenderDictionary;
 use Illuminate\Foundation\Http\FormRequest;
@@ -17,12 +17,12 @@ class ChangeProfileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'phone'                => ['nullable', 'string', 'max:50'],
-            'detail.firstName'     => ['required', 'string', 'max:50',],
-            'detail.lastName'      => ['required', 'string', 'max:50',],
-            'detail.fatherName'    => ['nullable', 'string', 'max:50',],
-            'detail.gender'        => ['required', 'string', Rule::in(UserGenderDictionary::getCollection())],
-            'detail.birthdayAt'    => ['date'],
+            'phone'              => ['nullable', 'string', 'max:50'],
+            'detail.first_name'  => ['required', 'string', 'max:50',],
+            'detail.last_name'   => ['required', 'string', 'max:50',],
+            'detail.father_name' => ['nullable', 'string', 'max:50',],
+            'detail.gender'      => ['required', 'string', Rule::in(UserGenderDictionary::getCollection())],
+            'detail.birthday_at' => ['date'],
         ];
     }
 }

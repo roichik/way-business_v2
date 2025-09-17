@@ -7,9 +7,9 @@ use App\Dto\PaginationDto;
 use App\Exceptions\Exception;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\PaginationRequest;
-use App\Http\Requests\Api\User\ChangeProfileRequest;
+use App\Http\Requests\Api\User\ChangeUserRequest;
 use App\Http\Requests\Api\User\CreateUserRequest;
-use App\Http\Responses\Api\User\Profile\UserResponse;
+use App\Http\Responses\Api\User\UserResponse;
 use App\Models\User\User;
 use App\Services\User\Dto\ChangeUserDto;
 use App\Services\User\Dto\CreateUserDto;
@@ -42,12 +42,12 @@ class UserController extends Controller
 
     /**
      * @param User $user
-     * @param ChangeProfileRequest $request
+     * @param ChangeUserRequest $request
      * @param UserService $userService
      * @return array
      * @throws \Throwable
      */
-    public function update(User $user, ChangeProfileRequest $request, UserService $userService)
+    public function change(User $user, ChangeUserRequest $request, UserService $userService)
     {
         $dto = new ChangeUserDto($request->validated());
         $userService

@@ -5,13 +5,7 @@ use App\Http\Controllers\Api\User\ProfileController;
 use App\Http\Controllers\Api\User\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/sign-up', [AuthController::class, 'signUp']);
 Route::post('/sign-in', [AuthController::class, 'signIn']);
-Route::post('/reset-password', [AuthController::class, 'resetPassword']);
-Route::post('/reset-password-by-token', [AuthController::class, 'resetPasswordByToken']);
-
-
-
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('user')->group(function () {

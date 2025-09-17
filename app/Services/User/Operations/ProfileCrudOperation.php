@@ -3,7 +3,6 @@
 namespace App\Services\User\Operations;
 
 use App\Models\User\User;
-use App\Services\User\Dto\ChangeUserDto;
 use App\Services\User\Dto\Profile\ChangeProfileDto;
 use Illuminate\Support\Facades\DB;
 
@@ -14,8 +13,10 @@ use Illuminate\Support\Facades\DB;
 class ProfileCrudOperation extends AbstractOperation
 {
     /**
-     * @param ChangeUserDto $userDto
-     * @return boolean
+     * @param User $user
+     * @param ChangeProfileDto $userDto
+     * @return bool
+     * @throws \Throwable
      */
     public function change(User $user, ChangeProfileDto $userDto)
     {

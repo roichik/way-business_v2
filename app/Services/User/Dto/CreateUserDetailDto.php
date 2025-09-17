@@ -43,6 +43,11 @@ class CreateUserDetailDto extends AbstractDto
     /**
      * @var int|null
      */
+    public $typeId;
+
+    /**
+     * @var int|null
+     */
     public $companyId;
 
     /**

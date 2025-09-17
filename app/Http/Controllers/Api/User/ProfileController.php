@@ -3,12 +3,9 @@
 namespace App\Http\Controllers\Api\User;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\User\AuthCreateRequest;
-use App\Http\Requests\Api\User\ChangeProfileRequest;
-use App\Http\Requests\Api\User\ChangeProfilePasswordRequest;
-use App\Http\Requests\User\ChangeUserRequest;
+use App\Http\Requests\Api\User\Profile\ChangeProfileRequest;
+use App\Http\Requests\Api\User\Profile\ChangeProfilePasswordRequest;
 use App\Http\Responses\Api\User\Profile\ProfileResponse;
-use App\Services\User\Dto\ChangeUserDto;
 use App\Services\User\Dto\Profile\ChangeProfileDto;
 use App\Services\User\UserService;
 use Illuminate\Http\JsonResponse;
@@ -21,9 +18,18 @@ use Illuminate\Support\Facades\Auth;
 class ProfileController extends Controller
 {
     /**
+     * @return array
+     */
+    public function detail()
+    {
+        return (new ProfileResponse(Auth::user()))
+            ->toArray(new Request());
+    }
+
+    /**
      * @param ChangeProfileRequest $request
      * @param UserService $userService
-     * @return JsonResponse
+     * @return array
      * @throws \Throwable
      */
     public function change(ChangeProfileRequest $request, UserService $userService)
@@ -40,17 +46,9 @@ class ProfileController extends Controller
     }
 
     /**
-     * @return array
-     */
-    public function detail()
-    {
-        return (new ProfileResponse(Auth::user()))
-            ->toArray(new Request());
-    }
-
-    /**
-     * @param AuthCreateRequest $request
-     * @return void
+     * @param ChangeProfilePasswordRequest $request
+     * @param UserService $userService
+     * @return JsonResponse
      */
     public function changePassword(ChangeProfilePasswordRequest $request, UserService $userService)
     {

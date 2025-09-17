@@ -3,6 +3,7 @@
 namespace App\Services\BackPackAdmin\Handlers\Security;
 
 use App\Models\User\User;
+use App\Services\Security\Handlers\ConsolidatedSecurityStructureByUserHandler;
 use App\Services\Security\SecurityService;
 
 /**
@@ -11,7 +12,7 @@ use App\Services\Security\SecurityService;
 class SyncAllPermissionsHandler
 {
     /**
-     * @var SecurityStructureByUserHandler
+     * @var ConsolidatedSecurityStructureByUserHandler
      */
     private $consolidatedData;
 
@@ -45,6 +46,11 @@ class SyncAllPermissionsHandler
         $this
             ->syncFlags()
             ->syncCompanies();
+
+        $this
+            ->securityService
+            ->general()
+            ->forgetCachedPermissions();
 
         return $this;
     }

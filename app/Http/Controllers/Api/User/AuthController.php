@@ -2,14 +2,9 @@
 
 namespace App\Http\Controllers\Api\User;
 
-use App\Facades\Activation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Auth\SignInRequest;
-use App\Models\User\ActivationCode;
-use App\Models\User\ReferrerCodeGenerator;
 use App\Models\User\User;
-use App\Services\Brevo\Events\BrevoEventsService;
-use App\Services\Brevo\Events\Dictionaries\EventDictionary;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,15 +13,6 @@ use Illuminate\Support\Facades\Auth;
  */
 class AuthController extends Controller
 {
-
-    /**
-     * @return JsonResponse
-     */
-    public function signUp()
-    {
-        return new JsonResponse();
-    }
-
     /**
      * @return JsonResponse
      */
@@ -54,21 +40,5 @@ class AuthController extends Controller
         return new JsonResponse([
             'token' => $token,
         ]);
-    }
-
-    /**
-     * @return JsonResponse
-     */
-    public function resetPassword()
-    {
-        return new JsonResponse();
-    }
-
-    /**
-     * @return JsonResponse
-     */
-    public function resetPasswordByToken()
-    {
-        return new JsonResponse();
     }
 }

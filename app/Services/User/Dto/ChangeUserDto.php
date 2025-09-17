@@ -59,4 +59,24 @@ class ChangeUserDto extends AbstractDto
 
         return $this;
     }
+
+    /**
+     * @return array
+     */
+    public function toAttributes(): array
+    {
+        $attributes = parent::toArray();
+
+        if ($attributes['nickname'] === null || $attributes['nickname'] === '') {
+            unset($attributes['nickname']);
+        }
+        if ($attributes['email'] === null || $attributes['email'] === '') {
+            unset($attributes['email']);
+        }
+        if ($attributes['password'] === null || $attributes['password'] === '') {
+            unset($attributes['password']);
+        }
+
+        return $attributes;
+    }
 }
