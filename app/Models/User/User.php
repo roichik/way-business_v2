@@ -3,11 +3,13 @@
 namespace App\Models\User;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Dictionaries\EntityEventDictionary;
 use App\Dictionaries\User\UserFlagDictionary;
 use App\Models\CompanyStructure\Company;
 use App\Models\Security\AccessAddons;
 use App\Models\Security\Permission;
 use App\Models\Security\Role;
+use App\Models\Traits\ExternalEventsTrait;
 use App\Models\Traits\FlagJsonTrait;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Carbon\Carbon;
@@ -47,7 +49,13 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens, HasRoles, CrudTrait, FlagJsonTrait;
+    use HasFactory,
+        Notifiable,
+        HasApiTokens,
+        HasRoles,
+        CrudTrait,
+        FlagJsonTrait,
+        ExternalEventsTrait;
 
     /**
      * @var list<string>
@@ -70,6 +78,7 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+
     /**
      * @return string[]
      */
@@ -87,6 +96,20 @@ class User extends Authenticatable
     }
 
     /**
+     * @var array
+     */
+    protected function getExternalEvents()
+    {
+        return [
+            EntityEventDictionary::VIEW   => true,
+            EntityEventDictionary::CREATE => false,
+            EntityEventDictionary::EDIT   => false,
+            EntityEventDictionary::DELETE => false,
+        ];
+    }
+
+
+        /**
      * @return array|null
      */
     public function flagDictionaryClass(): string
