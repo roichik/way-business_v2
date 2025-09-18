@@ -2,7 +2,7 @@
 
 namespace App\Extensions\DataBase\Query;
 
-use App\Dto\SortDto;
+use App\Dto\ListView\SortDto;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;

@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Api\User;
 
 use App\Dictionaries\User\UserFlagDictionary;
-use App\Dto\PaginationDto;
+use App\Dto\ListView\PaginationDto;
 use App\Exceptions\Exception;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\PaginationRequest;
 use App\Http\Requests\Api\User\ChangeUserRequest;
 use App\Http\Requests\Api\User\CreateUserRequest;
+use App\Http\Requests\Api\User\ListByPaginateUserRequest;
 use App\Http\Responses\Api\User\UserResponse;
 use App\Models\User\User;
 use App\Services\User\Dto\ChangeUserDto;
@@ -69,11 +69,11 @@ class UserController extends Controller
     }
 
     /**
-     * @param PaginationRequest $request
+     * @param ListByPaginateUserRequest $request
      * @param UserService $userService
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function listByPaginate(PaginationRequest $request, UserService $userService)
+    public function listByPaginate(ListByPaginateUserRequest $request, UserService $userService)
     {
         $collection = $userService
             ->userCrud()

@@ -2,7 +2,7 @@
 
 namespace App\Services\User\Operations;
 
-use App\Dto\PaginationDto;
+use App\Dto\ListView\PaginationDto;
 use App\Extensions\DataBase\Query\SettingOrderInQueriesTrait;
 use App\Models\User\User;
 use App\Services\User\Dto\ChangeUserDto;
