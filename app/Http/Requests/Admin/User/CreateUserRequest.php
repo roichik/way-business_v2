@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin\User;
 
 use App\Dictionaries\User\UserGenderDictionary;
+use Backpack\CRUD\app\Library\Validation\Rules\ValidUpload;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -18,6 +19,7 @@ class CreateUserRequest extends FormRequest
     {
         return [
             'nickname'           => ['required', 'string', 'max:100'],
+            'image'              => ValidUpload::field('required')->file('file|mimes:jpeg,png,jpg,gif,svg|max:2048'),
             'password'           => ['required', 'min:6', 'max:40', 'string'],
             'email'              => ['required', 'unique:users', 'email', 'max:50'],
             'email_verified_at'  => ['nullable', 'date'],
@@ -42,6 +44,7 @@ class CreateUserRequest extends FormRequest
     public function attributes()
     {
         return [
+            'image'              => 'Фото',
             'nickname'           => 'Пользователь',
             'email'              => 'Email',
             'password'           => 'Пароль',

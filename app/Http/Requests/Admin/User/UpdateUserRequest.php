@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin\User;
 
 use App\Dictionaries\User\UserGenderDictionary;
+use Backpack\CRUD\app\Library\Validation\Rules\ValidUpload;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -17,6 +18,7 @@ class UpdateUserRequest extends FormRequest
     public function rules()
     {
         return [
+            'image'              => ValidUpload::field('required')->file('file|mimes:jpeg,png,jpg,gif,svg|max:2048'),
             'password'           => ['nullable', 'min:6', 'max:40', 'string'],
             'email_verified_at'  => ['nullable', 'date'],
             'phone'              => ['nullable', 'string', 'max:50'],
@@ -40,6 +42,7 @@ class UpdateUserRequest extends FormRequest
     public function attributes()
     {
         return [
+            'image'              => 'Фото',
             'password'           => 'Пароль',
             'email_verified_at'  => 'Подтверджение пароля',
             'phone'              => 'Телефон',

@@ -11,12 +11,16 @@ use App\Models\Security\Permission;
 use App\Models\Security\Role;
 use App\Models\Traits\ExternalEventsTrait;
 use App\Models\Traits\FlagJsonTrait;
+use App\Models\Upload;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Image\Enums\Fit;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -47,7 +51,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Permission[] $adminAccessPermissions
  * @property Company[] $adminAccessCompanies
  */
-class User extends Authenticatable
+class User extends Authenticatable implements HasMedia
 {
     use HasFactory,
         Notifiable,
@@ -55,7 +59,8 @@ class User extends Authenticatable
         HasRoles,
         CrudTrait,
         FlagJsonTrait,
-        ExternalEventsTrait;
+        ExternalEventsTrait,
+        InteractsWithMedia;
 
     /**
      * @var list<string>
@@ -77,7 +82,6 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-
 
     /**
      * @return string[]
@@ -108,13 +112,24 @@ class User extends Authenticatable
         ];
     }
 
-
-        /**
+    /**
      * @return array|null
      */
     public function flagDictionaryClass(): string
     {
         return UserFlagDictionary::class;
+    }
+
+    /**
+     * @param Upload|null $media
+     * @return void
+     */
+    public function registerMediaConversions($media = null): void
+    {
+        $this
+            ->addMediaConversion('preview')
+            ->fit(Fit::Contain, 300, 300)
+            ->nonQueued();
     }
 
     /**

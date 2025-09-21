@@ -84,6 +84,7 @@ class UserCrudController extends BaseCrudController
     {
         CRUD::column('id')->label('ID');
         CRUD::column('nickname')->type('text')->label('Пользователь');
+        CRUD::column('image')->type('upload')->label('Фото')->tab('Общие сведенья')->withMedia();
         CRUD::column('email')->type('text')->label('Email');
         CRUD::column('email_verified_at')->type('text')->label('Дата верификации Email');
         CRUD::column('phone')->type('text')->label('Телефон');
@@ -226,6 +227,7 @@ class UserCrudController extends BaseCrudController
         CRUD::setValidation(CreateUserRequest::class);
 
         CRUD::field('nickname')->type('text')->label('Пользователь')->tab('Общие сведенья');
+        CRUD::field('image')->type('upload')->label('Фото')->tab('Общие сведенья')->withMedia();
         CRUD::field('email')->type('text')->label('Email')->attributes(['autocomplete' => 'off'])->tab('Общие сведенья');
         CRUD::field('password')->label('Пароль')->value('')->attributes(['autocomplete' => 'off'])->tab('Общие сведенья');
         CRUD::field('email_verified_at')->type('datetime')->label('Дата верификации Email')->tab('Общие сведенья');
@@ -270,6 +272,11 @@ class UserCrudController extends BaseCrudController
         CRUD::setValidation(UpdateUserRequest::class);
 
         CRUD::field('nickname')->type('text')->label('Пользователь')->attributes(['disabled' => 'disabled'])->tab('Общие сведенья');
+        CRUD::field('image')
+            ->type('upload')
+            ->label('Фото')
+            ->tab('Общие сведенья')
+            ->withMedia();
         CRUD::field('email')->type('text')->label('Email')->attributes(['autocomplete' => 'off', 'disabled' => 'disabled'])->tab('Общие сведенья');
         CRUD::field('password')->label('Пароль')->value('')->attributes(['autocomplete' => 'off'])->tab('Общие сведенья');
         CRUD::field('email_verified_at')->type('datetime')->label('Дата верификации Email')->tab('Общие сведенья');
